@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>monggodb</groupId>
+        <artifactId>monggodb-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>app</artifactId>
+    <name>MonggoDB - App</name>
+    <description>Program utama mDBMS: wiring komponen, urutan startup, main server dan client.</description>
+
+    <dependencies>
+        <!-- app adalah satu-satunya modul yang bergantung pada semua komponen. -->
+        <dependency>
+            <groupId>monggodb</groupId>
+            <artifactId>contracts</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>monggodb</groupId>
+            <artifactId>qp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>monggodb</groupId>
+            <artifactId>qo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>monggodb</groupId>
+            <artifactId>sm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>monggodb</groupId>
+            <artifactId>ccm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>monggodb</groupId>
+            <artifactId>frm</artifactId>
+        </dependency>
+    </dependencies>
+</project>

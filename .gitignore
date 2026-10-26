@@ -1,0 +1,33 @@
+# Hasil build Maven
+target/
+
+# File runtime mDBMS (.tbl, .idx, catalog.json, log FRM). Folder tetap ada lewat .gitkeep.
+data/*
+!data/.gitkeep
+
+# Hasil generate Javadoc
+apidocs/
+site/
+
+# Maven wrapper: jar diunduh otomatis oleh mvnw
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+bin/
+out/
+nbproject/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Log
+*.log
