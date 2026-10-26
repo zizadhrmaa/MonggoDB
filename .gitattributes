@@ -1,0 +1,29 @@
+# Normalisasi line ending otomatis untuk file teks
+* text=auto
+
+# mvnw adalah skrip shell: wajib LF, kalau CRLF akan gagal dijalankan di Mac/Linux
+mvnw text eol=lf
+*.sh text eol=lf
+
+# Skrip Windows wajib CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Sumber kode dan konfigurasi
+*.java text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.puml text eol=lf
+
+# Biner
+*.jar binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary
+*.drawio binary
+*.tbl binary
+*.idx binary
