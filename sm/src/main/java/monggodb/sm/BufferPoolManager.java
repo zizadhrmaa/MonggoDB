@@ -92,6 +92,10 @@ public final class BufferPoolManager {
         return targetPage;
     }
 
+    public synchronized Page getPage(String fileName, int pageId) {
+        return fetchPage(fileName, pageId);
+    }
+
     public synchronized Page newPage(String fileName) {
         int targetFrameIdx = acquireFrame();
         int newBlockId = blockManager.appendBlock(fileName);
@@ -106,6 +110,23 @@ public final class BufferPoolManager {
 
     public synchronized Page allocatePage(String fileName) {
         return newPage(fileName);
+    }
+
+    public synchronized void writePage(String fileName, int pageId, byte[] data) {
+        writePage(fileName, pageId, data, -1L);
+    }
+
+    public synchronized void writePage(String fileName, int pageId, byte[] data, long pageLsn) {
+        Objects.requireNonNull(data, "data must not be null");
+        if (data.length != blockManager.getBlockSize()) {
+            throw new IllegalArgumentException("Data length must match blockSize: " + blockManager.getBlockSize());
+        }
+        Page page = fetchPage(fileName, pageId);
+        try {
+            page.writeBytes(0, data, pageLsn);
+        } finally {
+            unpinPage(fileName, pageId, true, pageLsn);
+        }
     }
 
     public synchronized void unpinPage(String fileName, int pageId, boolean isDirty) {
@@ -226,6 +247,16 @@ public final class BufferPoolManager {
             frames[i].clear();
             freeFrames.addLast(i);
         }
+    }
+
+    public synchronized void createSnapshot(Path snapshotDirectory) {
+        flushAll();
+        blockManager.copyAllFilesTo(snapshotDirectory);
+    }
+
+    public synchronized void loadSnapshot(Path snapshotDirectory) {
+        resetBufferPool();
+        blockManager.restoreAllFilesFrom(snapshotDirectory);
     }
 
     public synchronized int getBlockCount(String fileName) {

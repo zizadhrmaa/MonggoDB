@@ -176,19 +176,18 @@ public class BlockAndBufferPoolTest {
             Page p0 = bpm.newPage("items.tbl");
             p0.writeBytes(0, "initial".getBytes(StandardCharsets.UTF_8), 1L);
             bpm.unpinPage("items.tbl", 0, true, 1L);
+
+            bpm.createSnapshot(snapDir);
+
+            byte[] mutatedBlock = new byte[4096];
+            byte[] mutatedText = "mutated".getBytes(StandardCharsets.UTF_8);
+            System.arraycopy(mutatedText, 0, mutatedBlock, 0, mutatedText.length);
+            bpm.writePage("items.tbl", 0, mutatedBlock, 2L);
             bpm.flushAll();
 
-            bm.copyAllFilesTo(snapDir);
+            bpm.loadSnapshot(snapDir);
 
-            Page p0Mod = bpm.fetchPage("items.tbl", 0);
-            p0Mod.writeBytes(0, "mutated".getBytes(StandardCharsets.UTF_8), 2L);
-            bpm.unpinPage("items.tbl", 0, true, 2L);
-            bpm.flushAll();
-
-            bpm.resetBufferPool();
-            bm.restoreAllFilesFrom(snapDir);
-
-            Page restored = bpm.fetchPage("items.tbl", 0);
+            Page restored = bpm.getPage("items.tbl", 0);
             require("initial".equals(new String(restored.readBytes(0, 7), StandardCharsets.UTF_8)),
                 "Restored snapshot should match initial state");
             bpm.unpinPage("items.tbl", 0, false);
