@@ -68,8 +68,8 @@ public class StorageException extends MdbmsException {
      * @param cause   exception asal
      */
     public StorageException(Code code, String message, Throwable cause) {
-        this(code, message);
-        initCause(cause);
+        super(code.name(), message, cause);
+        this.errorCode = code;
     }
 
     /** @return kode kesalahan dalam bentuk enum */
