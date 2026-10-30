@@ -28,17 +28,26 @@ public class ParsedQuery {
         this.cost = cost;
     }
 
-    /** @return jenis statement SQL */
+    /** @return jenis statement SQL
+     * @calls tidak ada
+     * @calledBy QO dan QP1
+     */
     public StatementType getStatementType() {
         return statementType;
     }
 
-    /** @return akar query plan */
+    /** @return akar query plan
+     * @calls tidak ada
+     * @calledBy QO dan QP2
+     */
     public PlanNode getHead() {
         return head;
     }
 
-    /** @return estimasi total biaya eksekusi */
+    /** @return estimasi total biaya eksekusi
+     * @calls tidak ada
+     * @calledBy QO dan QP1
+     */
     public double getCost() {
         return cost;
     }

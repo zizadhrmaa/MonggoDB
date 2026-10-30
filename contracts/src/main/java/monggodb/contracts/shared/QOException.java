@@ -36,17 +36,26 @@ public class QOException extends MdbmsException {
         this.token = token;
     }
 
-    /** @return kode kesalahan dalam bentuk enum */
+    /** @return kode kesalahan dalam bentuk enum
+     * @calls tidak ada
+     * @calledBy QO dan QP1
+     */
     public Code getErrorCode() {
         return errorCode;
     }
 
-    /** @return posisi karakter penyebab kesalahan */
+    /** @return posisi karakter penyebab kesalahan
+     * @calls tidak ada
+     * @calledBy QO dan QP1
+     */
     public int getPosition() {
         return position;
     }
 
-    /** @return token SQL penyebab kesalahan */
+    /** @return token SQL penyebab kesalahan
+     * @calls tidak ada
+     * @calledBy QO dan QP1
+     */
     public String getToken() {
         return token;
     }
