@@ -7,9 +7,12 @@ package monggodb.contracts.shared;
  * dengan enum masing-masing.
  */
 public class MdbmsException extends RuntimeException {
+    /** Nama kode error, diambil dari enum milik subclass. */
     private final String code;
 
     /**
+     * Konstruktor exception dengan kode dan pesan.
+     *
      * @param code    nama kode dari enum subclass
      * @param message pesan yang ditampilkan
      */
@@ -18,8 +21,22 @@ public class MdbmsException extends RuntimeException {
         this.code = code;
     }
 
-    /** 
-     * @return nama kode error 
+    /**
+     * Dipakai saat membungkus exception lain (mencantumkan asal exception).
+     *
+     * @param code    nama kode dari enum subclass
+     * @param message pesan yang ditampilkan
+     * @param cause   exception asli penyebab error
+     */
+    public MdbmsException(String code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
+    }
+
+    /**
+     * Mengembalikan kode error dalam bentuk teks.
+     *
+     * @return nama kode error
      */
     public String getCode() {
         return code;
