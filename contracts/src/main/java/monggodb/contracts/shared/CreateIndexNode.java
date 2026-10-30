@@ -78,7 +78,7 @@ public class CreateIndexNode extends PlanNode {
      *
      * @return tipe indeks BTREE atau HASH
      */
-    public IndexType getType() {
+    public IndexType getIndexType() {
         return type;
     }
 }

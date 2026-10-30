@@ -1,10 +1,5 @@
 package monggodb.contracts.shared;
 
-public class CreateTableNode {
-    
-}
-package monggodb.contracts.shared;
-
 /**
  * Merepresentasikan perintah CREATE TABLE untuk membuat tabel baru berdasarkan skema yang ditentukan.
  *
