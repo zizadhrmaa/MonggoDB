@@ -10,13 +10,7 @@ import monggodb.contracts.shared.RollbackResult;
 import monggodb.contracts.shared.TxId;
 import monggodb.contracts.sm.StorageManager;
 
-/**
- * Zona Undo (FR3): membatalkan transaksi yang diminta CCM.
- *
- * <p>Setiap undo dicatat sebagai catatan kompensasi (INSERT dibalas DELETE, UPDATE dibalas UPDATE dengan
- * before/after ditukar, DELETE dibalas INSERT di RID yang sama) sebelum ABORT. Karena itu crash recovery
- * cukup mengulang seluruh riwayat lalu meng-undo transaksi yang belum selesai.
- */
+
 final class RollbackManager {
 
     private final FrmContext ctx;
@@ -56,11 +50,7 @@ final class RollbackManager {
         }
     }
 
-    /**
-     * Membaca log mundur dan mengambil perubahan data transaksi dari yang terbaru sampai BEGIN-nya.
-     * Kompensasi dari rollback sebelumnya yang gagal ikut diambil; meng-undo-nya tetap menghasilkan
-     * keadaan sebelum transaksi dimulai.
-     */
+
     private List<LogRecord> changesNewestFirst(TxId txId) {
         List<LogRecord> out = new ArrayList<>();
         Iterator<LogRecord> it = ctx.log.readLogFrom(ctx.log.lastLsn(), LogManager.Direction.BACKWARD);
@@ -73,10 +63,7 @@ final class RollbackManager {
         return out;
     }
 
-    /**
-     * undoRecord: mencatat kebalikan satu perubahan sebagai catatan kompensasi, lalu menerapkannya ke SM
-     * dengan LSN catatan yang di-undo. Tabel yang sudah di-DROP dilewati.
-     */
+
     void undoRecord(StorageManager storage, LogRecord original) {
         LogRecord clr = ctx.log.appendToBuffer(inverse(original));
         RecoveryManager.apply(storage, clr, original.lsn());

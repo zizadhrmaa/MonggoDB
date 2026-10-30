@@ -7,10 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import monggodb.contracts.shared.LogRecord;
 import monggodb.contracts.shared.TxId;
 
-/**
- * Status setiap transaksi yang dikenal FRM (aktif, committed, atau aborted). Dibangun ulang dari log
- * saat startup dan setelah recover. Objek TxState juga menjadi kunci per transaksi.
- */
+
 final class TransactionTable {
 
     enum TxStatus { ACTIVE, COMMITTED, ABORTED }

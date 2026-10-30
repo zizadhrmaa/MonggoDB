@@ -18,12 +18,7 @@ import monggodb.contracts.shared.LogRecord;
 import monggodb.contracts.shared.LogType;
 import monggodb.contracts.shared.TxId;
 
-/**
- * Zona Log (FR2): pencatatan BEGIN/perubahan/COMMIT, buffer log, dan file WAL append-only berisi frame
- * LogRecord. Seluruh entri (persisten maupun di buffer) juga disimpan di memori agar readLogFrom tidak
- * perlu membaca ulang file. Semua metode thread-safe dan tidak pernah memanggil komponen lain,
- * sehingga aman dipanggil SM dari dalam operasi buffer.
- */
+
 final class LogManager {
 
     /** Hasil pemindaian file log saat dibuka. */
@@ -53,9 +48,7 @@ final class LogManager {
         this.txs = txs;
     }
 
-    // ------------------------------------------------------------------ pencatatan transaksi (FR-01, FR-02)
 
-    /** Mencatat BEGIN. Belum persisten. */
     LSN logBegin(TxId txId) {
         if (txId == null) throw new IllegalArgumentException("txId tidak boleh null");
         LogRecord r = appendToBuffer(marker(txId, LogType.BEGIN));
@@ -63,7 +56,6 @@ final class LogManager {
         return r.lsn();
     }
 
-    /** Mencatat satu perubahan data sebelum diterapkan. Belum persisten; SM memanggil flushLogUntil. */
     LSN logChange(LogRecord record) {
         validateChange(record);
         TransactionTable.TxState st = txs.getOrCreate(record.txId());
@@ -75,7 +67,6 @@ final class LogManager {
         }
     }
 
-    /** Mencatat COMMIT lalu memaksa log ke disk. COMMIT yang gagal disimpan dibuang dari buffer. */
     LSN logCommit(TxId txId) {
         TransactionTable.TxState st = txs.getOrCreate(txId);
         synchronized (st) {
@@ -119,12 +110,8 @@ final class LogManager {
         }
     }
 
-    // ------------------------------------------------------------------ file log
 
-    /**
-     * Membuka file log dan memuat seluruh entri yang valid. Entri terakhir yang terpotong dibuang dari
-     * file; kerusakan di bagian tengah dicatat dan membuat log menolak penulisan berikutnya.
-     */
+
     synchronized ScanReport open() {
         try {
             Files.createDirectories(file.toAbsolutePath().getParent());
@@ -201,11 +188,7 @@ final class LogManager {
         return corruption;
     }
 
-    /**
-     * Menambah entri ke buffer log dan mengisi lsn, timestamp, dan prevLSN. Belum persisten.
-     * @param record entri tanpa field FRM
-     * @return entri yang sudah diberi LSN
-     */
+  
     synchronized LogRecord appendToBuffer(LogRecord record) {
         ensureWritable();
         LSN lsn = nextLSN();
@@ -218,10 +201,7 @@ final class LogManager {
         return stamped;
     }
 
-    /**
-     * Memastikan seluruh entri sampai LSN tertentu sudah tersimpan permanen (write + fsync).
-     * Seluruh isi buffer ikut ditulis. LSN.NONE langsung kembali.
-     */
+
     synchronized void forceToDisk(LSN upTo) {
         if (upTo == null || LogRecords.isNone(upTo) || upTo.compareTo(flushedLsn()) <= 0) return;
         writeBuffer();
@@ -263,11 +243,7 @@ final class LogManager {
         }
     }
 
-    /**
-     * Membuang satu entri yang masih di buffer, dipakai ketika COMMIT gagal disimpan agar entri
-     * tersebut tidak ikut tertulis oleh flush berikutnya.
-     * @return true jika entri ditemukan di buffer dan dibuang
-     */
+
     synchronized boolean retract(LSN lsn) {
         for (int i = records.size() - 1; i >= durableCount; i--) {
             LogRecord r = records.get(i);
@@ -283,11 +259,7 @@ final class LogManager {
         return false;
     }
 
-    /**
-     * Iterator log mulai dari LSN tertentu, termasuk entri yang masih di buffer. Maju: entri dengan
-     * LSN &gt;= from menurut urutan naik. Mundur: entri dengan LSN &lt;= from menurut urutan turun.
-     * Iterator bekerja pada salinan sehingga aman walau log terus bertambah.
-     */
+
     synchronized Iterator<LogRecord> readLogFrom(LSN from, Direction dir) {
         List<LogRecord> out = new ArrayList<>();
         if (dir == Direction.FORWARD) {

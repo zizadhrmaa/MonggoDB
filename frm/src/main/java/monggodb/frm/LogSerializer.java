@@ -20,12 +20,7 @@ import monggodb.contracts.shared.Row;
 import monggodb.contracts.shared.TxId;
 import monggodb.contracts.shared.Value;
 
-/**
- * Mengubah LogRecord ke byte dan sebaliknya.
- * Satu entri di file log disimpan sebagai frame: [panjang payload: int][CRC32 payload: int][payload],
- * sehingga entri terpotong atau rusak dapat dikenali saat dibaca ulang.
- * Before/after kosong ("record tidak ada") ditulis dengan penanda 0, berbeda dari Row berisi Value NULL.
- */
+
 public final class LogSerializer {
 
     /** Ukuran header frame: panjang payload dan CRC32. */
@@ -38,10 +33,7 @@ public final class LogSerializer {
     private LogSerializer() {
     }
 
-    /**
-     * @param record entri yang sudah memiliki LSN
-     * @return frame lengkap (header + payload)
-     */
+
     public static byte[] serialize(LogRecord record) {
         byte[] payload = toPayload(record);
         ByteBuffer buf = ByteBuffer.allocate(HEADER_SIZE + payload.length);
@@ -51,11 +43,7 @@ public final class LogSerializer {
         return buf.array();
     }
 
-    /**
-     * @param payload isi frame tanpa header
-     * @return entri log hasil dekode
-     * @throws IOException jika payload tidak valid
-     */
+
     public static LogRecord deserialize(byte[] payload) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(payload));
         byte version = in.readByte();
@@ -75,22 +63,14 @@ public final class LogSerializer {
         return new LogRecord(lsn, tx < 0 ? null : new TxId(tx), types[typeOrd], table, rid, before, after, timestamp, prev);
     }
 
-    /**
-     * @param payload isi frame
-     * @return CRC32 payload
-     */
+  
     public static int checksum(byte[] payload) {
         CRC32 crc = new CRC32();
         crc.update(payload);
         return (int) crc.getValue();
     }
 
-    /**
-     * Menulis Row (boleh null) ke stream. Dipakai juga oleh SM tiruan berbasis berkas di driver.
-     * @param out stream tujuan
-     * @param row isi record, null berarti "record tidak ada"
-     * @throws IOException jika penulisan gagal
-     */
+
     public static void writeRow(DataOutputStream out, Row row) throws IOException {
         if (row == null) {
             out.writeBoolean(false);
@@ -111,12 +91,7 @@ public final class LogSerializer {
         }
     }
 
-    /**
-     * Membaca Row yang ditulis {@link #writeRow}.
-     * @param in stream sumber
-     * @return Row, atau null untuk "record tidak ada"
-     * @throws IOException jika data tidak valid
-     */
+
     public static Row readRow(DataInputStream in) throws IOException {
         if (!in.readBoolean()) return null;
         RID rid = readRid(in);

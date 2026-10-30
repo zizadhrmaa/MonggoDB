@@ -13,16 +13,7 @@ import monggodb.contracts.shared.RollbackResult;
 import monggodb.contracts.shared.TxId;
 import monggodb.contracts.sm.StorageManager;
 
-/**
- * Facade Failure Recovery Manager (FR1). Tidak mengerjakan logika berat; setiap panggilan diteruskan
- * ke manajer yang tepat:
- * <ul>
- *   <li>logBegin, logChange, logCommit, flushLogUntil, readLog: {@link LogManager}</li>
- *   <li>rollback: {@link RollbackManager}</li>
- *   <li>checkpoint, restoreTo, checkpoint berkala: {@link CheckpointManager}</li>
- *   <li>recover: {@link RecoveryManager}</li>
- * </ul>
- */
+
 public class FailureRecoveryManagerImpl implements FailureRecoveryManager {
 
     /** Nama file log di dalam folder log. */
@@ -60,15 +51,11 @@ public class FailureRecoveryManagerImpl implements FailureRecoveryManager {
         this.recoveryManager = new RecoveryManager(ctx, rollbackManager, checkpointManager);
     }
 
-    /**
-     * Memasang Storage Manager untuk undo, redo, flush, dan snapshot. Dipanggil app sebelum startup.
-     * Bukan bagian antarmuka karena SM juga memegang referensi ke FRM (flushLogUntil).
-     */
+
     public void setStorageManager(StorageManager storageManager) {
         ctx.sm = storageManager;
     }
 
-    // ------------------------------------------------------------------ startup / shutdown
 
     @Override
     public void startup() {
@@ -90,7 +77,6 @@ public class FailureRecoveryManagerImpl implements FailureRecoveryManager {
         logManager.close();
     }
 
-    // ------------------------------------------------------------------ pencatatan (FR-01, FR-02)
 
     @Override
     public LSN logBegin(TxId txId) {
@@ -112,7 +98,6 @@ public class FailureRecoveryManagerImpl implements FailureRecoveryManager {
         logManager.forceToDisk(lsn);
     }
 
-    // ------------------------------------------------------------------ rollback, recovery, checkpoint
 
     @Override
     public RollbackResult rollback(TxId txId) {
@@ -144,15 +129,12 @@ public class FailureRecoveryManagerImpl implements FailureRecoveryManager {
         checkpointManager.stopPeriodicCheckpoint();
     }
 
-    // ------------------------------------------------------------------ pembacaan log (FR-03)
 
     @Override
     public List<LogRecord> readLog(TxId txId) {
         if (txId == null) return logManager.readAll();
         return logManager.readAll().stream().filter(r -> txId.equals(r.txId())).toList();
     }
-
-    // ------------------------------------------------------------------ dukungan pengujian
 
     /** Membuat penyimpanan log berikutnya gagal (LOG_WRITE_FAILED). Hanya untuk driver dan pengujian. */
     public void simulateNextLogWriteFailure() {

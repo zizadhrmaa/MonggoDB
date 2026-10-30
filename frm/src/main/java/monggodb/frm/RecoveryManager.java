@@ -18,10 +18,7 @@ import monggodb.contracts.shared.StorageException;
 import monggodb.contracts.shared.TxId;
 import monggodb.contracts.sm.StorageManager;
 
-/**
- * Zona Crash Recovery (FR5): analyze, redo seluruh riwayat sejak checkpoint terakhir yang lengkap,
- * lalu undo transaksi yang belum selesai lewat undoRecord milik RollbackManager.
- */
+
 final class RecoveryManager {
 
     /** Status satu transaksi hasil analyze, beserta entri COMMIT-nya jika ada. */
@@ -93,11 +90,7 @@ final class RecoveryManager {
         }
     }
 
-    /**
-     * analyze: menentukan status tiap transaksi (committed, aborted, belum selesai) dari log mulai LSN
-     * tertentu. Entri yang dibuang oleh restoreTo sebelumnya diabaikan.
-     * @return status per transaksi menurut urutan kemunculan
-     */
+  
     static Map<TxId, TxInfo> analyze(FrmContext ctx, LSN from) {
         Map<TxId, TxInfo> status = new LinkedHashMap<>();
         Iterator<LogRecord> it = ctx.log.readLogFrom(from, LogManager.Direction.FORWARD);
@@ -118,11 +111,7 @@ final class RecoveryManager {
         apply(storage, r, r.lsn());
     }
 
-    /**
-     * Menerapkan satu perubahan ke SM secara idempoten: INSERT memakai insertRecordAt, UPDATE memakai
-     * updateRecord (atau insertRecordAt jika record tidak ada), DELETE memakai deleteRecord.
-     * Tabel yang sudah di-DROP (TABLE_NOT_FOUND) dilewati.
-     */
+ 
     static void apply(StorageManager storage, LogRecord r, LSN lsn) {
         RID rid = r.rid();
         try {

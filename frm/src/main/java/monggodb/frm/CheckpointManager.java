@@ -23,10 +23,7 @@ import monggodb.contracts.shared.StorageException;
 import monggodb.contracts.shared.TxId;
 import monggodb.contracts.sm.StorageManager;
 
-/**
- * Zona Checkpoint dan Pemulihan Historis (FR4): checkpoint manual dan berkala, snapshot awal, dan restoreTo.
- * maintenanceLock memastikan checkpoint, restoreTo, dan recover tidak pernah berjalan bersamaan.
- */
+
 final class CheckpointManager {
 
     /** Nama snapshot awal yang dibuat lewat SM.createSnapshot. */
@@ -64,9 +61,7 @@ final class CheckpointManager {
         }
     }
 
-    // ------------------------------------------------------------------ checkpoint (FR-06)
 
-    // Menahan transaksi baru dan menunggu transaksi aktif selesai (admission CCM) dipasang lagi
     // setelah interface CCM ada di main.
     CheckpointResult checkpoint() {
         maintenanceLock.lock();
@@ -84,10 +79,7 @@ final class CheckpointManager {
         }
     }
 
-    /**
-     * CHECKPOINT_START dipaksa ke disk, SM menulis semua dirty page (memanggil flushLogUntil), lalu
-     * CHECKPOINT_END dipaksa ke disk. CHECKPOINT_END hanya ada jika flushAll berhasil.
-     */
+
     LSN writeCheckpoint(StorageManager storage) {
         LogRecord start = ctx.log.appendToBuffer(LogManager.marker(null, LogType.CHECKPOINT_START));
         ctx.log.forceToDisk(start.lsn());
@@ -97,10 +89,7 @@ final class CheckpointManager {
         return end.lsn();
     }
 
-    /**
-     * findLastCheckpoint: mencari CHECKPOINT_END terakhir yang didahului CHECKPOINT_START.
-     * @return LSN CHECKPOINT_END tersebut, atau LSN.NONE jika belum ada
-     */
+
     static LSN findLastCheckpoint(LogManager log) {
         LSN end = LSN.NONE;
         Iterator<LogRecord> it = log.readLogFrom(log.lastLsn(), LogManager.Direction.BACKWARD);
@@ -146,7 +135,6 @@ final class CheckpointManager {
         }
     }
 
-    // ------------------------------------------------------------------ pemulihan historis (FR-05)
 
     RecoveryResult restoreTo(RecoveryTarget target) {
         maintenanceLock.lock();

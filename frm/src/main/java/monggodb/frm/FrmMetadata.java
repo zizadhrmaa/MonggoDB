@@ -19,7 +19,6 @@ import monggodb.contracts.shared.LSN;
  */
 final class FrmMetadata {
 
-    /** Rentang LSN tertutup [from, to] yang tidak lagi termasuk riwayat aktif. */
     record LsnRange(long from, long to) {
         boolean contains(LSN lsn) {
             return lsn.value() >= from && lsn.value() <= to;
