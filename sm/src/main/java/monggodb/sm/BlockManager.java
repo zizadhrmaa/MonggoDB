@@ -2,13 +2,13 @@ package monggodb.sm;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import monggodb.contracts.shared.StorageException;
 
 public final class BlockManager {
     public static final int DEFAULT_BLOCK_SIZE = 4096;
@@ -30,7 +30,7 @@ public final class BlockManager {
         try {
             Files.createDirectories(this.dataDirectory);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to create data directory: " + this.dataDirectory, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to create data directory: " + this.dataDirectory, e);
         }
     }
 
@@ -70,7 +70,7 @@ public final class BlockManager {
             }
             Files.createFile(file);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to create file: " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to create file: " + fileName, e);
         }
     }
 
@@ -79,7 +79,7 @@ public final class BlockManager {
         try {
             Files.deleteIfExists(file);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to delete file: " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to delete file: " + fileName, e);
         }
     }
 
@@ -90,7 +90,7 @@ public final class BlockManager {
             raf.setLength(0);
             raf.getChannel().force(true);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to truncate file: " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to truncate file: " + fileName, e);
         }
     }
 
@@ -103,7 +103,7 @@ public final class BlockManager {
             long size = Files.size(file);
             return Math.toIntExact((size + blockSize - 1) / blockSize);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read file size: " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to read file size: " + fileName, e);
         }
     }
 
@@ -145,7 +145,7 @@ public final class BlockManager {
                 }
             }
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read block " + blockId + " from " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to read block " + blockId + " from " + fileName, e);
         }
     }
 
@@ -168,7 +168,7 @@ public final class BlockManager {
             raf.write(data, 0, blockSize);
             raf.getChannel().force(false);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to write block " + blockId + " to " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to write block " + blockId + " to " + fileName, e);
         }
     }
 
@@ -191,7 +191,7 @@ public final class BlockManager {
             raf.getChannel().force(false);
             return newBlockId;
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to append block to " + fileName, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to append block to " + fileName, e);
         }
     }
 
@@ -204,8 +204,12 @@ public final class BlockManager {
                 .sorted()
                 .toList();
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to list files in " + dataDirectory, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to list files in " + dataDirectory, e);
         }
+    }
+
+    public synchronized void copyAllFilesTo(String snapshotName) {
+        copyAllFilesTo(resolveSnapshotDirectory(snapshotName));
     }
 
     public synchronized void copyAllFilesTo(Path targetDirectory) {
@@ -213,13 +217,31 @@ public final class BlockManager {
         copyDirectoryContents(this.dataDirectory, targetDirectory.toAbsolutePath().normalize());
     }
 
+    public synchronized void restoreAllFilesFrom(String snapshotName) {
+        restoreAllFilesFrom(resolveSnapshotDirectory(snapshotName));
+    }
+
     public synchronized void restoreAllFilesFrom(Path sourceDirectory) {
         Objects.requireNonNull(sourceDirectory, "sourceDirectory must not be null");
         Path normalizedSource = sourceDirectory.toAbsolutePath().normalize();
         if (!Files.exists(normalizedSource)) {
-            throw new IllegalArgumentException("Snapshot directory does not exist: " + sourceDirectory);
+            throw new StorageException(StorageException.Code.SNAPSHOT_NOT_FOUND, "Snapshot directory does not exist: " + sourceDirectory);
         }
         copyDirectoryContents(normalizedSource, this.dataDirectory);
+    }
+
+    public Path resolveSnapshotDirectory(String snapshotName) {
+        Objects.requireNonNull(snapshotName, "snapshotName must not be null");
+        String trimmed = snapshotName.trim();
+        if (trimmed.isEmpty()) {
+            throw new IllegalArgumentException("snapshotName must not be empty");
+        }
+        Path snapshotsRoot = dataDirectory.resolve("snapshots").normalize();
+        Path resolved = snapshotsRoot.resolve(trimmed).normalize();
+        if (!resolved.startsWith(snapshotsRoot)) {
+            throw new IllegalArgumentException("Invalid snapshotName: " + snapshotName);
+        }
+        return resolved;
     }
 
     private void copyDirectoryContents(Path sourceDir, Path targetDir) {
@@ -242,7 +264,7 @@ public final class BlockManager {
                 }
             }
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to copy data files between " + sourceDir + " and " + targetDir, e);
+            throw new StorageException(StorageException.Code.IO_ERROR, "Failed to copy data files between " + sourceDir + " and " + targetDir, e);
         }
     }
 }

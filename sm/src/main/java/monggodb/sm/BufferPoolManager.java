@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import monggodb.contracts.shared.LSN;
 
 public final class BufferPoolManager {
     public static final int DEFAULT_POOL_SIZE = 64;
@@ -113,10 +114,14 @@ public final class BufferPoolManager {
     }
 
     public synchronized void writePage(String fileName, int pageId, byte[] data) {
-        writePage(fileName, pageId, data, -1L);
+        writePage(fileName, pageId, data, LSN.NONE);
     }
 
     public synchronized void writePage(String fileName, int pageId, byte[] data, long pageLsn) {
+        writePage(fileName, pageId, data, pageLsn < 0 ? LSN.NONE : new LSN(pageLsn));
+    }
+
+    public synchronized void writePage(String fileName, int pageId, byte[] data, LSN pageLsn) {
         Objects.requireNonNull(data, "data must not be null");
         if (data.length != blockManager.getBlockSize()) {
             throw new IllegalArgumentException("Data length must match blockSize: " + blockManager.getBlockSize());
@@ -130,10 +135,14 @@ public final class BufferPoolManager {
     }
 
     public synchronized void unpinPage(String fileName, int pageId, boolean isDirty) {
-        unpinPage(fileName, pageId, isDirty, -1L);
+        unpinPage(fileName, pageId, isDirty, LSN.NONE);
     }
 
     public synchronized void unpinPage(String fileName, int pageId, boolean isDirty, long pageLsn) {
+        unpinPage(fileName, pageId, isDirty, pageLsn < 0 ? LSN.NONE : new LSN(pageLsn));
+    }
+
+    public synchronized void unpinPage(String fileName, int pageId, boolean isDirty, LSN pageLsn) {
         BlockId blockId = new BlockId(fileName, pageId);
         Integer frameIdx = pageTable.get(blockId);
         if (frameIdx == null) {
@@ -148,10 +157,14 @@ public final class BufferPoolManager {
     }
 
     public synchronized void markDirty(String fileName, int pageId) {
-        markDirty(fileName, pageId, -1L);
+        markDirty(fileName, pageId, LSN.NONE);
     }
 
     public synchronized void markDirty(String fileName, int pageId, long pageLsn) {
+        markDirty(fileName, pageId, pageLsn < 0 ? LSN.NONE : new LSN(pageLsn));
+    }
+
+    public synchronized void markDirty(String fileName, int pageId, LSN pageLsn) {
         BlockId blockId = new BlockId(fileName, pageId);
         Integer frameIdx = pageTable.get(blockId);
         if (frameIdx == null) {
@@ -249,9 +262,19 @@ public final class BufferPoolManager {
         }
     }
 
+    public synchronized void createSnapshot(String snapshotName) {
+        flushAll();
+        blockManager.copyAllFilesTo(snapshotName);
+    }
+
     public synchronized void createSnapshot(Path snapshotDirectory) {
         flushAll();
         blockManager.copyAllFilesTo(snapshotDirectory);
+    }
+
+    public synchronized void loadSnapshot(String snapshotName) {
+        resetBufferPool();
+        blockManager.restoreAllFilesFrom(snapshotName);
     }
 
     public synchronized void loadSnapshot(Path snapshotDirectory) {
@@ -344,7 +367,7 @@ public final class BufferPoolManager {
         if (!page.isDirty() || page.getBlockId() == null) {
             return;
         }
-        if (logFlusher != null) {
+        if (logFlusher != null && !LSN.NONE.equals(page.getPageLsn())) {
             logFlusher.flushLogUntil(page.getPageLsn());
         }
         BlockId id = page.getBlockId();

@@ -2,20 +2,21 @@ package monggodb.sm;
 
 import java.util.Arrays;
 import java.util.Objects;
+import monggodb.contracts.shared.LSN;
 
 public final class Page {
     private BlockId blockId;
     private final byte[] data;
     private int pinCount;
     private boolean dirty;
-    private long pageLsn;
+    private LSN pageLsn;
 
     public Page(int blockSize) {
         if (blockSize <= 0) {
             throw new IllegalArgumentException("blockSize must be positive: " + blockSize);
         }
         this.data = new byte[blockSize];
-        this.pageLsn = -1L;
+        this.pageLsn = LSN.NONE;
     }
 
     public BlockId getBlockId() {
@@ -46,33 +47,37 @@ public final class Page {
         return dirty;
     }
 
-    public long getPageLsn() {
+    public LSN getPageLsn() {
         return pageLsn;
     }
 
     public void markDirty() {
-        this.dirty = true;
-        if (this.pageLsn < 0) {
-            this.pageLsn = Long.MAX_VALUE;
-        }
+        markDirty(LSN.NONE);
     }
 
     public void markDirty(long lsn) {
+        markDirty(lsn < 0 ? LSN.NONE : new LSN(lsn));
+    }
+
+    public void markDirty(LSN lsn) {
         this.dirty = true;
-        if (lsn >= 0) {
-            if (this.pageLsn == Long.MAX_VALUE || lsn > this.pageLsn) {
-                this.pageLsn = lsn;
+        LSN candidate = lsn == null ? LSN.NONE : lsn;
+        if (!LSN.NONE.equals(candidate) && candidate.compareTo(LSN.NONE) > 0) {
+            if (LSN.NONE.equals(this.pageLsn) || candidate.compareTo(this.pageLsn) > 0) {
+                this.pageLsn = candidate;
             }
-        } else if (this.pageLsn < 0) {
-            this.pageLsn = Long.MAX_VALUE;
         }
     }
 
     public void writeBytes(int offset, byte[] src) {
-        writeBytes(offset, src, -1L);
+        writeBytes(offset, src, LSN.NONE);
     }
 
     public void writeBytes(int offset, byte[] src, long lsn) {
+        writeBytes(offset, src, lsn < 0 ? LSN.NONE : new LSN(lsn));
+    }
+
+    public void writeBytes(int offset, byte[] src, LSN lsn) {
         Objects.requireNonNull(src, "src must not be null");
         if (offset < 0 || offset + src.length > data.length) {
             throw new IndexOutOfBoundsException("Write out of bounds: offset=" + offset + ", length=" + src.length);
@@ -92,7 +97,7 @@ public final class Page {
         this.blockId = newBlockId;
         this.pinCount = 1;
         this.dirty = false;
-        this.pageLsn = -1L;
+        this.pageLsn = LSN.NONE;
     }
 
     void pin() {
@@ -108,7 +113,7 @@ public final class Page {
 
     void clearDirty() {
         this.dirty = false;
-        this.pageLsn = -1L;
+        this.pageLsn = LSN.NONE;
     }
 
     void clear() {
@@ -116,6 +121,6 @@ public final class Page {
         Arrays.fill(this.data, (byte) 0);
         this.pinCount = 0;
         this.dirty = false;
-        this.pageLsn = -1L;
+        this.pageLsn = LSN.NONE;
     }
 }

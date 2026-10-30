@@ -1,6 +1,8 @@
 package monggodb.sm;
 
+import monggodb.contracts.shared.LSN;
+
 @FunctionalInterface
 public interface LogFlusher {
-    void flushLogUntil(long lsn);
+    void flushLogUntil(LSN lsn);
 }
