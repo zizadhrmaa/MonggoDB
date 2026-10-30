@@ -1,0 +1,26 @@
+## Crash setelah checkpoint selesai: recovery dimulai dari checkpoint terakhir (FR-06, FR-07)
+table acc
+seed acc 0:1 1 100
+seed acc 0:2 2 200
+
+begin T1
+update T1 acc 0:1 1 150
+commit T1
+checkpoint
+expect-result OK
+
+begin T2
+update T2 acc 0:2 2 250
+commit T2
+begin T3
+update T3 acc 0:1 1 999
+insert T3 acc 0:3 3 300
+flush-table acc
+
+crash
+# T1 sudah aman di disk sebelum checkpoint sehingga tidak perlu di-redo
+expect-result OK redone=[Tx2] undone=[Tx3]
+expect acc 0:1 1 150
+expect acc 0:2 2 250
+expect acc 0:3 absent
+expect-rows acc 2

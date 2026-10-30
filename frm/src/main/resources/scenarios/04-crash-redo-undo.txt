@@ -1,0 +1,48 @@
+## Crash tanpa checkpoint: tiga transaksi committed, aborted, dan aktif (FR-07, FR-08)
+table emp
+table dept
+seed emp 0:1 1 'Ani' 5000.0
+seed emp 0:2 2 'Budi' 4000.0
+seed emp 0:3 3 'Citra' 3000.0
+seed dept 0:1 10 c'IT'
+
+# T3 aktif saat crash, perubahannya sudah sampai ke disk (harus di-undo)
+begin T3
+update T3 emp 0:3 3 'Citra' 9999.0
+insert T3 emp 0:4 4 'Dodi' 100.0
+delete T3 dept 0:1
+# T2 dibatalkan; perubahannya sempat ditulis ke disk, kompensasinya belum
+begin T2
+update T2 emp 0:2 2 'Budi' 1.0
+flush
+abort T2
+expect-result DONE
+# T1 commit, tapi datanya belum ditulis ke disk (harus di-redo)
+begin T1
+update T1 emp 0:1 1 'Ani' 5500.0
+update T1 emp 0:1 1 'Ani' 6000.0
+insert T1 dept 0:2 20 c'HR'
+commit T1
+
+crash
+expect-result OK redone=[Tx1] undone=[Tx3]
+expect emp 0:1 1 'Ani' 6000.0
+expect emp 0:2 2 'Budi' 4000.0
+expect emp 0:3 3 'Citra' 3000.0
+expect emp 0:4 absent
+expect dept 0:1 10 c'IT'
+expect dept 0:2 20 c'HR'
+expect-rows emp 3
+expect-rows dept 2
+expect-log T3 BEGIN UPDATE INSERT DELETE INSERT DELETE UPDATE ABORT
+
+# Restart setelah recovery menghasilkan data yang sama tanpa record ganda
+crash
+expect-result OK redone=[] undone=[]
+expect emp 0:1 1 'Ani' 6000.0
+expect emp 0:3 3 'Citra' 3000.0
+expect emp 0:4 absent
+expect dept 0:2 20 c'HR'
+expect-rows emp 3
+expect-rows dept 2
+expect-log-valid

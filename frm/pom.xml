@@ -14,6 +14,11 @@
     <name>MonggoDB - Failure Recovery Manager</name>
     <description>Komponen Failure Recovery Manager.</description>
 
+    <properties>
+        <!-- Kelas default untuk ./mvnw -pl frm exec:java -->
+        <exec.mainClass>monggodb.frm.driver.FrmDriver</exec.mainClass>
+    </properties>
+
     <dependencies>
         <!-- Komponen hanya boleh bergantung pada contracts, tidak pada modul komponen lain. -->
         <dependency>

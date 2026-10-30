@@ -1,0 +1,19 @@
+## Checkpoint manual dan checkpoint berkala (FR-06)
+# Admission CCM (menahan transaksi baru, menunggu transaksi aktif) diuji lagi setelah interface CCM ada di main.
+table t
+seed t 0:1 1
+
+begin T1
+update T1 t 0:1 2
+commit T1
+checkpoint
+expect-result OK Checkpoint selesai
+begin T2
+update T2 t 0:1 3
+commit T2
+expect-result OK
+expect t 0:1 3
+
+periodic-checkpoint 100 450
+expect-result OK
+expect-log-valid
