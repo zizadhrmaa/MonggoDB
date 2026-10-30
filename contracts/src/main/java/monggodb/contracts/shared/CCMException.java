@@ -25,8 +25,8 @@ public class CCMException extends MdbmsException {
         ROLLBACK_FAILED
     }
 
-    /** Kode error spesifik CCM. */
-    private final Code ccmCode;
+    /** Kode error dalam bentuk enum. */
+    private final Code errorCode;
 
     /**
      * @param code jenis error
@@ -34,7 +34,7 @@ public class CCMException extends MdbmsException {
      */
     public CCMException(Code code, String message) {
         super(code.name(), message);
-        this.ccmCode = code;
+        this.errorCode = code;
     }
 
     /**
@@ -44,11 +44,11 @@ public class CCMException extends MdbmsException {
      */
     public CCMException(Code code, String message, Throwable cause) {
         super(code.name(), message, cause);
-        this.ccmCode = code;
+        this.errorCode = code;
     }
 
-    /** @return kode error spesifik CCM */
-    public Code getCcmCode() {
-        return ccmCode;
+    /** @return kode error dalam bentuk enum */
+    public Code getErrorCode() {
+        return errorCode;
     }
 }
