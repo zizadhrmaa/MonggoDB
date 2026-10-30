@@ -1,0 +1,21 @@
+## Catatan untuk tabel yang sudah di-DROP dilewati saat rollback dan recovery
+table emp
+table tmp
+seed emp 0:1 1 100
+
+begin T1
+insert T1 tmp 0:1 7
+commit T1
+begin T2
+insert T2 tmp 0:2 8
+update T2 emp 0:1 1 200
+# DDL tidak dicatat di log dan tidak dibatalkan oleh ABORT
+drop-table tmp
+abort T2
+expect-result DONE
+expect emp 0:1 1 100
+
+crash
+expect-result OK redone=[Tx1] undone=[]
+expect emp 0:1 1 100
+expect-rows emp 1

@@ -1,0 +1,24 @@
+## Entri log terakhir terpotong dikenali, log rusak di tengah membuat recovery gagal (FR-07)
+table t
+seed t 0:1 1 'x'
+
+begin T1
+update T1 t 0:1 1 'y'
+commit T1
+# crash saat entri terakhir sedang ditulis
+crash tail
+expect-result OK redone=[Tx1]
+expect t 0:1 1 'y'
+expect-log-valid
+
+begin T2
+update T2 t 0:1 1 'z'
+commit T2
+expect t 0:1 1 'z'
+
+# kerusakan di bagian tengah log
+crash middle
+expect-result FAILED Pemulihan gagal, log rusak
+# sistem tidak menerima transaksi baru
+begin T3
+expect-result ERROR

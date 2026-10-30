@@ -1,0 +1,38 @@
+## Pencatatan WAL, peristiwa transaksi, dan pembacaan log (FR-01, FR-02, FR-03)
+table emp
+seed emp 0:1 1 'Ani' 5000.0
+seed emp 0:2 2 'Budi' NULL:FLOAT
+
+# Log kosong ditampilkan tanpa error
+log
+expect-log-count 0
+
+begin T1
+insert T1 emp 0:3 3 'Citra' 4500.0
+update T1 emp 0:1 1 'Ani' 5250.0
+delete T1 emp 0:2
+commit T1
+begin T2
+update T2 emp 0:3 3 'Citra' NULL:FLOAT
+log
+log T1
+expect-log T1 BEGIN INSERT UPDATE DELETE COMMIT
+expect-log T2 BEGIN UPDATE
+expect-log-count 7
+expect-log-valid
+expect emp 0:3 3 'Citra' NULL:FLOAT
+abort T2
+expect emp 0:3 3 'Citra' 4500.0
+expect-log T2 BEGIN UPDATE UPDATE ABORT
+
+# Log persisten tetap dapat dibaca setelah proses dihentikan dan dijalankan ulang
+crash
+log
+expect-log T1 BEGIN INSERT UPDATE DELETE COMMIT
+expect-log T2 BEGIN UPDATE UPDATE ABORT
+# 9 entri lama + CHECKPOINT_START/END dari recovery
+expect-log-count 11
+expect-log-valid
+expect emp 0:1 1 'Ani' 5250.0
+expect emp 0:2 absent
+expect emp 0:3 3 'Citra' 4500.0

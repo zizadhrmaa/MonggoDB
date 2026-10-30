@@ -69,7 +69,7 @@ Setiap komponen punya driver di `<modul>/src/main/java/monggodb/<modul>/driver/`
 | Query Optimizer | QO-16 | QO1 | _belum ada_ |
 | Storage Manager | SM-15 | SM1 | _belum ada_ |
 | Concurrency Control Manager | CC-10 | CC5 | _belum ada_ |
-| Failure Recovery Manager | FR-09 | FR1 | _belum ada_ |
+| Failure Recovery Manager | FR-09 | FR1 | `monggodb.frm.driver.FrmDriver` |
 
 ## Struktur repo
 
