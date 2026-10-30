@@ -7,7 +7,6 @@ import monggodb.contracts.shared.Schema;
 import monggodb.contracts.shared.StorageException;
 import monggodb.contracts.shared.Value;
 
-
 public interface RecordSerializer {
 
     /**
