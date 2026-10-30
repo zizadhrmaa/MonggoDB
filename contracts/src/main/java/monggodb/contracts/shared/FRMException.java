@@ -17,8 +17,8 @@ public class FRMException extends MdbmsException {
         RESTORE_OUT_OF_RANGE
     }
 
-    /** Kode error spesifik FRM. */
-    private final Code frmCode;
+    /** Kode error dalam bentuk enum. */
+    private final Code errorCode;
 
     /**
      * @param code jenis error
@@ -26,7 +26,7 @@ public class FRMException extends MdbmsException {
      */
     public FRMException(Code code, String message) {
         super(code.name(), message);
-        this.frmCode = code;
+        this.errorCode = code;
     }
 
     /**
@@ -36,11 +36,11 @@ public class FRMException extends MdbmsException {
      */
     public FRMException(Code code, String message, Throwable cause) {
         super(code.name(), message, cause);
-        this.frmCode = code;
+        this.errorCode = code;
     }
 
-    /** @return kode error spesifik FRM */
-    public Code getFrmCode() {
-        return frmCode;
+    /** @return kode error dalam bentuk enum */
+    public Code getErrorCode() {
+        return errorCode;
     }
 }
