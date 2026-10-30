@@ -39,6 +39,7 @@ public interface FailureRecoveryManager {
      * Mencatat awal transaksi.
      * @param txId transaksi yang dimulai
      * @return LSN entri BEGIN
+     * @throws FRMException LOG_WRITE_FAILED atau LOG_CORRUPTED jika pencatatan gagal; transaksi tidak boleh dimulai
      * @calls tidak ada
      * @calledBy CCM (CC3)
      */
@@ -77,7 +78,17 @@ public interface FailureRecoveryManager {
 
     /**
      * Membatalkan semua perubahan satu transaksi dalam urutan terbalik, lalu mencatat ABORT.
-     * Setiap undo dicatat sebagai catatan kompensasi sehingga riwayat tetap dapat diulang saat recovery.
+     * <p>Isi log setelah rollback: setiap perubahan yang dibatalkan menghasilkan satu entri baru milik
+     * transaksi yang sama, memakai jenis yang sudah ada di LogType dengan before/after dibalik:
+     * <ul>
+     *   <li>pembatalan INSERT dicatat sebagai DELETE (before = after entri asli, after kosong)</li>
+     *   <li>pembatalan UPDATE dicatat sebagai UPDATE (before dan after entri asli ditukar)</li>
+     *   <li>pembatalan DELETE dicatat sebagai INSERT di RID yang sama (before kosong, after = before entri asli)</li>
+     * </ul>
+     * Entri ini dicatat dari perubahan terakhir ke yang pertama, lalu ditutup ABORT. Contoh: BEGIN, INSERT r1,
+     * UPDATE r2, lalu rollback menghasilkan UPDATE r2 (dibalik), DELETE r1, ABORT. Entri pembatalan ini
+     * diperlukan agar recovery dapat mengulang riwayat log apa adanya. Pemanggil tidak perlu membuatnya;
+     * CCM tetap hanya memanggil rollback.
      * @param txId transaksi yang dibatalkan
      * @return DONE, ALREADY_ABORTED, TX_COMMITTED, TX_UNKNOWN, atau FAILED
      * @calls SM: fetchRecord, insertRecordAt, updateRecord, deleteRecord
@@ -114,17 +125,10 @@ public interface FailureRecoveryManager {
     RecoveryResult restoreTo(RecoveryTarget target);
 
     /**
-     * Membaca seluruh isi log (persisten dan yang masih di buffer) menurut urutan LSN. Tidak mengubah log.
-     * @return daftar entri; kosong jika log kosong
-     * @calls tidak ada
-     * @calledBy driver FRM, driver CCM
-     */
-    List<LogRecord> readLog();
-
-    /**
-     * Membaca isi log untuk satu transaksi menurut urutan LSN. Tidak mengubah log.
-     * @param txId transaksi yang dicari; null berarti semua entri
-     * @return daftar entri; kosong jika tidak ada
+     * Membaca isi log (persisten dan yang masih di buffer) menurut urutan LSN, opsional difilter per
+     * transaksi. Tidak mengubah log.
+     * @param txId transaksi yang dicari; null berarti seluruh isi log
+     * @return daftar entri; kosong jika log kosong atau transaksi tidak punya entri
      * @calls tidak ada
      * @calledBy driver FRM, driver CCM
      */
