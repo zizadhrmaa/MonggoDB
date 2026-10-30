@@ -58,7 +58,7 @@ public interface ConcurrencyControlManager {
      * @return keputusan akses dan requestId untuk menunggu atau menutup izin
      * @throws CCMException TX_UNKNOWN jika transaksi tidak dikenal, INVALID_REQUEST jika input tidak valid,
      *                      atau INVALID_STATE jika transaksi bukan ACTIVE dan belum ABORTED
-     * @calls CCM: acquireLock atau validateTimestamp
+     * @calls tidak ada
      * @calledBy QP3 (scan), QP4 (JOIN), QP5
      */
     AccessResponse requestRead(TxId txId, ResourceId resource);
@@ -73,7 +73,7 @@ public interface ConcurrencyControlManager {
      * @throws CCMException TX_UNKNOWN jika transaksi tidak dikenal, INVALID_REQUEST jika input atau mutasi
      *                      tidak valid, INVALID_STATE jika transaksi bukan ACTIVE dan belum ABORTED,
      *                      LOG_FAILED jika pencatatan gagal, atau ROLLBACK_FAILED jika undo gagal
-     * @calls CCM: acquireLock atau validateTimestamp; FRM: logChange, rollback jika gagal (melalui CC3)
+     * @calls FRM: logChange, rollback jika gagal (melalui CC3)
      * @calledBy QP3 (DELETE), QP5 (INSERT/UPDATE)
      */
     AccessResponse requestWrite(TxId txId, ResourceId resource, ChangeRequest change);
@@ -86,7 +86,7 @@ public interface ConcurrencyControlManager {
      * @return keputusan akses terbaru; ALLOWED tetap wajib diikuti completeAccess
      * @throws CCMException TX_UNKNOWN jika transaksi tidak dikenal, atau INVALID_REQUEST jika permintaan
      *                      atau batas waktu tidak valid
-     * @calls CCM: acquireLock atau validateTimestamp
+     * @calls tidak ada
      * @calledBy QP1, QP5, operator peminta
      */
     AccessResponse waitForAccess(TxId txId, String requestId, long timeoutMs);
@@ -99,7 +99,7 @@ public interface ConcurrencyControlManager {
      * @param success true jika operasi SM berhasil
      * @throws CCMException TX_UNKNOWN jika transaksi tidak dikenal, INVALID_REQUEST jika izin tidak valid,
      *                      atau ROLLBACK_FAILED jika undo akibat kegagalan akses gagal
-     * @calls CCM: onAccessCompleted; FRM: rollback (melalui CC3) jika operasi gagal
+     * @calls FRM: rollback (melalui CC3) jika operasi gagal
      * @calledBy QP3, QP5 setelah akses SM; QP4 melalui scan
      */
     void completeAccess(TxId txId, String requestId, boolean success);
@@ -119,6 +119,7 @@ public interface ConcurrencyControlManager {
 
     /**
      * Mengubah transaksi ke FAILED, lalu ABORTED dan melepas resource setelah undo selesai.
+     * Idempoten: panggilan kedua menunggu lalu mengembalikan TransactionResult yang sama tanpa rollback ulang.
      * @param txId transaksi yang dibatalkan
      * @param reason alasan pembatalan
      * @return hasil penyelesaian aktual transaksi
@@ -177,8 +178,8 @@ public interface ConcurrencyControlManager {
 
     /**
      * Menutup admission (BEGIN ditolak dengan ADMISSION_PAUSED), menghentikan detector,
-     * dan menunggu executor abort.
-     * @calls internal: stopDetector, menunggu executor abort selesai
+     * dan menunggu rollback yang sedang berjalan selesai. Idempoten.
+     * @calls tidak ada
      * @calledBy app (shutdownSystem QP1), setelah server ditutup, sesi aktif dibatalkan,
      *           dan FRM.stopPeriodicCheckpoint; sebelum SM.shutdown dan FRM.shutdown
      */
