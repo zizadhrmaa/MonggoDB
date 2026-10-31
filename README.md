@@ -45,7 +45,8 @@ Kalau `./mvnw compile` gagal setelah clone, kabari ketua supergroup.
 ```bash
 ./mvnw install -DskipTests
 
-# Terminal 1: server (startup: SM dimuat, FRM recovery, CCM initialize, lalu server menerima koneksi)
+# Terminal 1: server (startup: SM.startup, FRM.startup, CCM.initialize yang menjalankan recovery FRM,
+# checkpoint berkala dimulai, lalu server menerima koneksi)
 ./mvnw -pl app exec:java -Dexec.mainClass=monggodb.app.ServerMain
 
 # Terminal 2 dan 3: client CLI (minimal dua client untuk menguji transaksi konkuren)
@@ -65,11 +66,13 @@ Setiap komponen punya driver di `<modul>/src/main/java/monggodb/<modul>/driver/`
 
 | Driver | Requirement | PIC | Kelas main |
 |---|---|---|---|
-| Query Processor | QP-14 | QP1 | _belum ada_ |
+| Query Processor | QP-14 | QP1 | _belum ada_ (sementara `monggodb.qp.driver.RowOperatorDriver` untuk operator Scan dan Project, QP-05) |
 | Query Optimizer | QO-16 | QO1 | _belum ada_ |
 | Storage Manager | SM-15 | SM1 | _belum ada_ |
-| Concurrency Control Manager | CC-10 | CC5 | _belum ada_ |
+| Concurrency Control Manager | CC-10 | CC5 | `monggodb.ccm.driver.CcmDriver` |
 | Failure Recovery Manager | FR-09 | FR1 | `monggodb.frm.driver.FrmDriver` |
+
+Detail kelas, format log, dan cara menjalankan skenario FRM ada di [frm/README.md](frm/README.md).
 
 ## Struktur repo
 
@@ -91,8 +94,8 @@ docs/reports/     laporan milestone dan riwayat perubahan kontrak
 ## Keputusan arsitektur
 
 1. **Dependensi modul.** Modul komponen hanya bergantung pada `contracts`. Hanya `app` yang bergantung pada semua komponen. Mock diletakkan di `contracts` supaya tidak ada dependensi siklus antarmodul.
-2. **Konfigurasi.** Hanya `app` yang membaca `config/mdbms.properties`. Nilainya diteruskan ke komponen sebagai parameter, misalnya `CCM.initialize(protocol, lastTxId)` dan `SM.startup(dataDir, bufferSize)`. Driver komponen tidak bergantung pada file konfigurasi.
-3. **Dependensi dua arah antarobjek.** SM memanggil FRM (log persisten sebelum halaman ditulis), FRM memanggil SM (undo/redo); CCM memanggil FRM (log, rollback), FRM memanggil CCM (menahan transaksi saat checkpoint). Ini diselesaikan dengan setter injection atau interface sempit (misalnya `LogFlusher`) yang dipasang `app` setelah semua objek dibuat, bukan lewat constructor.
+2. **Konfigurasi.** Hanya `app` yang membaca `config/mdbms.properties`. Nilainya diteruskan ke komponen lewat konstruktor atau parameter metode, misalnya `CCMConfig` (protokol dan batas waktu deadlock) ke konstruktor CCM, folder data ke `SM.startup(dataDir)`, dan interval checkpoint ke `FRM.startPeriodicCheckpoint(intervalMs)`. Driver komponen tidak bergantung pada file konfigurasi.
+3. **Dependensi dua arah antarobjek.** SM memanggil FRM (log persisten sebelum halaman ditulis), FRM memanggil SM (undo/redo); CCM memanggil FRM (log, rollback), FRM memanggil CCM (menahan transaksi saat checkpoint). Ini diselesaikan dengan setter injection (misalnya `FailureRecoveryManagerImpl.setStorageManager`) atau interface sempit (misalnya `LogFlusher` di SM) yang dipasang `app` setelah semua objek dibuat, bukan lewat constructor.
 4. **Driver FRM.** Uji persistensi dan crash recovery FRM (FR-09) memakai SM tiruan berbasis berkas yang dibuat FRM sendiri di modul `frm`, karena `frm` tidak boleh bergantung pada modul `sm`.
 
 ## Aturan kerja
@@ -105,23 +108,25 @@ docs/reports/     laporan milestone dan riwayat perubahan kontrak
 - Setelah kontrak dibekukan, setiap perubahan `contracts/` dicatat di [docs/reports/riwayat-kontrak.md](docs/reports/riwayat-kontrak.md).
 - Penamaan: interface tanpa awalan `I` (`StorageManager`), mock berawalan `Mock` (`MockStorageManager`), implementasi berakhiran `Impl` (`StorageManagerImpl`).
 - Hanya library standar Java. Dilarang memakai library yang mengimplementasikan fungsi inti DBMS.
-- Generative AI tidak boleh dipakai untuk menulis kode implementasi.
+- Generative AI boleh dipakai untuk menulis kode implementasi (pengumuman asisten, 30 Oktober 2026). Aturan library dan kepemilikan folder di atas tetap berlaku.
 
 ## Format Javadoc
 
-Setiap interface dan kelas diberi deskripsi 1 sampai 2 kalimat. Setiap metode di interface wajib memuat `@param`, `@return`, `@calls`, dan `@calledBy`. Setiap field shared type diberi deskripsi singkat. Tag `@calls` dan `@calledBy` sudah didaftarkan di `pom.xml`.
+Setiap interface dan kelas diberi deskripsi 1 sampai 2 kalimat. Setiap metode di interface wajib memuat `@param`, `@return`, `@calls`, dan `@calledBy`, serta `@throws` jika metode melempar exception. Setiap field shared type diberi deskripsi singkat. Tag `@calls` dan `@calledBy` sudah didaftarkan di `pom.xml`.
 
 ```java
 /** Pintu masuk Storage Manager untuk operasi data. */
 public interface StorageManager {
     /**
      * Mengambil satu record berdasarkan RID.
+     *
      * @param table nama tabel
-     * @param rid alamat record
-     * @return record yang ditemukan
-     * @calls tidak ada
-     * @calledBy QP3 (IndexScan), FR3 (undo)
+     * @param rid   alamat record
+     * @return record di RID tersebut, atau kosong jika slot kosong atau masih dipesan
+     * @throws StorageException TABLE_NOT_FOUND jika tabel tidak ada
+     * @calledBy QP3 (Index Scan), FR3 dan FR5 (cek sebelum undo/redo)
+     * @calls Tidak ada
      */
-    Row fetchRecord(String table, RID rid);
+    Optional<Row> fetchRecord(String table, RID rid) throws StorageException;
 }
 ```
