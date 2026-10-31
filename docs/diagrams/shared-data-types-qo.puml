@@ -1,0 +1,207 @@
+@startuml shared-data-types-qo
+' Shared data type milik Query Optimizer, dibuat dari contracts/shared di main.
+!pragma layout smetana
+set separator none
+hide empty members
+hide circle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+package "Query Optimizer" {
+  class "ParsedQuery" <<dataType>> {
+    + statementType: StatementType
+    + head: PlanNode
+    + cost: double
+  }
+  enum "StatementType" <<enumeration>> {
+    SELECT
+    INSERT
+    UPDATE
+    DELETE
+    CREATE_INDEX
+    CREATE_TABLE
+    DROP_TABLE
+    BEGIN
+    COMMIT
+    ABORT
+  }
+  class "PlanNode" <<dataType>> {
+    + type: PlanNodeType
+    + estimatedRows: long
+    + estimatedCost: double
+  }
+  enum "PlanNodeType" <<enumeration>> {
+    SCAN
+    INDEX_SCAN
+    FILTER
+    PROJECT
+    JOIN
+    SORT
+    LIMIT
+    INSERT
+    UPDATE
+    DELETE
+    CREATE_INDEX
+    CREATE_TABLE
+    DROP_TABLE
+  }
+  class "ScanNode" <<dataType>> {
+    + table: String
+    + alias: String
+  }
+  class "IndexScanNode" <<dataType>> {
+    + table: String
+    + alias: String
+    + indexName: String
+    + column: ColumnRef
+    + range: IndexKeyRange
+  }
+  class "FilterNode" <<dataType>> {
+    + child: PlanNode
+    + condition: ExpressionNode
+  }
+  class "ProjectNode" <<dataType>> {
+    + child: PlanNode
+    + columns: List<ColumnRef>
+  }
+  class "JoinNode" <<dataType>> {
+    + left: PlanNode
+    + right: PlanNode
+    + spec: JoinSpec
+  }
+  class "JoinSpec" <<dataType>> {
+    + joinType: JoinSpec.JoinType
+    + condition: ExpressionNode
+    + commonColumns: List<String>
+    + algorithm: JoinSpec.JoinAlgorithm
+    + blockLimit: int
+  }
+  enum "JoinSpec.JoinType" <<enumeration>> {
+    CARTESIAN
+    CONDITIONAL
+    NATURAL
+  }
+  enum "JoinSpec.JoinAlgorithm" <<enumeration>> {
+    BNLJ
+  }
+  class "SortNode" <<dataType>> {
+    + child: PlanNode
+    + key: SortKey
+  }
+  class "SortKey" <<dataType>> {
+    + column: ColumnRef
+    + direction: SortKey.Direction
+  }
+  enum "SortKey.Direction" <<enumeration>> {
+    ASC
+    DESC
+  }
+  class "LimitNode" <<dataType>> {
+    + child: PlanNode
+    + limit: int
+  }
+  class "InsertNode" <<dataType>> {
+    + table: String
+    + values: List<Value>
+  }
+  class "UpdateNode" <<dataType>> {
+    + child: PlanNode
+    + table: String
+    + column: ColumnRef
+    + value: ExpressionNode
+  }
+  class "DeleteNode" <<dataType>> {
+    + child: PlanNode
+    + table: String
+  }
+  class "CreateIndexNode" <<dataType>> {
+    + indexName: String
+    + table: String
+    + column: String
+    + type: IndexType
+  }
+  class "CreateTableNode" <<dataType>> {
+    + schema: Schema
+  }
+  class "DropTableNode" <<dataType>> {
+    + table: String
+    + cascade: boolean
+  }
+  class "ExpressionNode" <<dataType>> {
+    + kind: ExpressionNode.ExprKind
+    + resultType: DataType
+  }
+  enum "ExpressionNode.ExprKind" <<enumeration>> {
+    COLUMN_REF
+    LITERAL
+    BINARY_OP
+    IS_NULL
+    SUBQUERY
+  }
+  class "ColumnRef" <<dataType>> {
+    + table: String
+    + column: String
+    + outer: boolean
+    + dataType: DataType
+  }
+  class "LiteralExpr" <<dataType>> {
+    + value: Value
+  }
+  class "BinaryExpr" <<dataType>> {
+    + op: BinaryExpr.BinaryOp
+    + left: ExpressionNode
+    + right: ExpressionNode
+  }
+  enum "BinaryExpr.BinaryOp" <<enumeration>> {
+    ADD
+    SUB
+    MUL
+    DIV
+    EQ
+    NEQ
+    LT
+    LTE
+    GT
+    GTE
+    AND
+  }
+  class "IsNullExpr" <<dataType>> {
+    + operand: ExpressionNode
+    + negated: boolean
+  }
+  class "SubqueryExpr" <<dataType>> {
+    + kind: SubqueryExpr.SubqueryKind
+    + operand: ExpressionNode
+    + subquery: ParsedQuery
+    + correlated: boolean
+  }
+  enum "SubqueryExpr.SubqueryKind" <<enumeration>> {
+    IN
+    EXISTS
+  }
+  class "IndexKeyRange" <<dataType>> {
+    + kind: IndexKeyRange.RangeKind
+    + lower: Value
+    + upper: Value
+    + lowerInclusive: boolean
+    + upperInclusive: boolean
+  }
+  enum "IndexKeyRange.RangeKind" <<enumeration>> {
+    EQUAL
+    RANGE
+  }
+  class "MdbmsConstants" <<dataType>> {
+    + {static} BNLJ_BUFFER_BLOCKS: int
+  }
+  class "QOException" <<dataType>> {
+    + errorCode: QOException.Code
+    + position: int
+    + token: String
+  }
+  enum "QOException.Code" <<enumeration>> {
+    SYNTAX_ERROR
+    SEMANTIC_ERROR
+  }
+}
+@enduml
