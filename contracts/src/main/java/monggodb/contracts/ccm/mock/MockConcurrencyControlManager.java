@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import monggodb.contracts.ccm.ConcurrencyControlManager;
@@ -227,25 +228,101 @@ public class MockConcurrencyControlManager implements ConcurrencyControlManager 
     private void applyDecision(TxId txId, String requestId, AccessDecision decision, AbortReason reason, List<TxId> blockedBy) {
         if (decision == AccessDecision.ABORTED) {
             markFailed(txId, reason);
-            // TODO CC3: sambungkan ke abort terpisah; keputusan ABORTED belum mengonfirmasi undo selesai.
+            startAsyncAbort(txId, reason);
         } else {
             LSN lsn = LSN.NONE;
             ChangeRequest change = changes.get(requestId);
             if (decision == AccessDecision.ALLOWED && change != null) {
                 try {
-                    checkLogFailure();
-                    lsn = frm.logChange(new LogRecord(LSN.NONE, txId, change.type(), change.table(), change.rid(),
-                            change.before(), change.after(), 0L, LSN.NONE));
-                } catch (FRMException e) {
+                    lsn = forwardChangeLog(txId, change);
+                } catch (CCMException e) {
                     markFailed(txId, AbortReason.LOG_FAILED);
-                    // TODO CC3: sambungkan kegagalan log ke alur abort.
-                    throw new CCMException(CCMException.Code.LOG_FAILED, "Log perubahan gagal; transaksi FAILED", e);
+                    startAsyncAbort(txId, AbortReason.LOG_FAILED);
+                    throw e;
                 }
             }
             if (decision == AccessDecision.ALLOWED) inProgress.add(requestId);
             requests.put(requestId, response(txId, requestId, decision, lsn, blockedBy));
         }
         notifyAll();
+    }
+
+    /** CC3: membentuk LogRecord dan meminta FRM mencatat perubahan data sekali per operationId. */
+    public synchronized LSN forwardChangeLog(TxId txId, ChangeRequest change) {
+        status(txId);
+        if (change == null) throw error(CCMException.Code.INVALID_REQUEST, "change wajib diisi");
+        try {
+            checkLogFailure();
+            return frm.logChange(new LogRecord(LSN.NONE, txId, change.type(), change.table(), change.rid(),
+                    change.before(), change.after(), 0L, LSN.NONE));
+        } catch (FRMException e) {
+            throw new CCMException(CCMException.Code.LOG_FAILED, "Log perubahan gagal; transaksi FAILED", e);
+        }
+    }
+
+    /** CC3: mengoordinasikan satu jalur pembatalan transaksi ke FRM dan melepas resource setelah undo berhasil. */
+    public synchronized TransactionResult rollbackTransaction(TxId txId, AbortReason reason) {
+        status(txId);
+        if (reason == null) throw error(CCMException.Code.INVALID_REQUEST, "Alasan abort wajib diisi");
+        while (rollingBack.contains(txId)) await(TimeUnit.SECONDS.toNanos(1));
+        if (status(txId) == TransactionStatus.COMMITTED) return result(txId, false, "Transaksi sudah committed");
+        if (status(txId) == TransactionStatus.ABORTED) return results.get(txId);
+        if (rollbackErrors.containsKey(txId)) throw rollbackErrors.get(txId);
+        markFailed(txId, reason);
+        rollingBack.add(txId);
+        long delay = rollbackDelayMs;
+        boolean failure = failRollback;
+        rollbackDelayMs = 0;
+        failRollback = false;
+        try {
+            while (hasAccess(txId)) await(TimeUnit.SECONDS.toNanos(1));
+            long start = System.nanoTime();
+            long remaining = timeoutNanos(delay);
+            while (remaining > 0) {
+                await(remaining);
+                remaining = timeoutNanos(delay) - (System.nanoTime() - start);
+            }
+            if (failure) throw error(CCMException.Code.ROLLBACK_FAILED, "Rollback gagal (simulasi mock)");
+            RollbackResult undo = frm.rollback(txId);
+            if (undo == null || (undo.status() != RollbackResult.Status.DONE && undo.status() != RollbackResult.Status.ALREADY_ABORTED)) {
+                throw error(CCMException.Code.ROLLBACK_FAILED, "FRM belum mengonfirmasi undo selesai");
+            }
+            statuses.put(txId, TransactionStatus.ABORTED);
+            results.put(txId, result(txId, true, "Transaksi sudah dibatalkan"));
+            return results.get(txId);
+        } catch (RuntimeException e) {
+            CCMException failureResult = new CCMException(CCMException.Code.ROLLBACK_FAILED, "Rollback gagal; status tetap FAILED", e);
+            rollbackErrors.put(txId, failureResult);
+            throw failureResult;
+        } finally {
+            rollingBack.remove(txId);
+            notifyAll();
+        }
+    }
+
+    /** CC3: membersihkan state runtime CCM dan menginisialisasi counter TxId di atas maxTxId hasil pemulihan. */
+    public synchronized void resetAfterRecovery(RecoveryResult result) {
+        if (result == null || !result.success()) throw error(CCMException.Code.RECOVERY_FAILED, "Recovery tidak berhasil");
+        if (result.maxTxId() != null) lastTxId = Math.max(lastTxId, result.maxTxId().value());
+        statuses.clear();
+        abortReasons.clear();
+        results.clear();
+        rollbackErrors.clear();
+        requests.clear();
+        changes.clear();
+        writeRequests.clear();
+        protocol = config.protocol();
+        resetNextDecision();
+    }
+
+    private void startAsyncAbort(TxId txId, AbortReason reason) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                rollbackTransaction(txId, reason);
+            } catch (RuntimeException ignored) {
+                // Status transaksi tetap FAILED jika undo gagal
+            }
+        });
     }
 
     /** Implementasi mock untuk ConcurrencyControlManager.
@@ -264,17 +341,7 @@ public class MockConcurrencyControlManager implements ConcurrencyControlManager 
                 throw error(CCMException.Code.RECOVERY_FAILED, "Recovery gagal (simulasi mock)");
             }
             RecoveryResult result = frm.recover();
-            if (result == null || !result.success()) throw error(CCMException.Code.RECOVERY_FAILED, "Recovery tidak berhasil");
-            if (result.maxTxId() != null) lastTxId = Math.max(lastTxId, result.maxTxId().value());
-            statuses.clear();
-            abortReasons.clear();
-            results.clear();
-            rollbackErrors.clear();
-            requests.clear();
-            changes.clear();
-            writeRequests.clear();
-            protocol = config.protocol();
-            resetNextDecision();
+            resetAfterRecovery(result);
             initialized = true;
             notifyAll();
             return result;
@@ -325,7 +392,7 @@ public class MockConcurrencyControlManager implements ConcurrencyControlManager 
             frm.logCommit(txId);
         } catch (FRMException e) {
             markFailed(txId, AbortReason.LOG_FAILED);
-            // TODO CC3: lengkapi alur abort sesuai hasil FRM jika log COMMIT gagal.
+            startAsyncAbort(txId, AbortReason.LOG_FAILED);
             throw new CCMException(CCMException.Code.LOG_FAILED, "Log COMMIT gagal; transaksi FAILED", e);
         }
         statuses.put(txId, TransactionStatus.COMMITTED);
@@ -337,42 +404,7 @@ public class MockConcurrencyControlManager implements ConcurrencyControlManager 
     /** CC1: abort idempoten; simulasi rollback dilanjutkan CC3. */
     @Override
     public synchronized TransactionResult abortTransaction(TxId txId, AbortReason reason) {
-        status(txId);
-        if (reason == null) throw error(CCMException.Code.INVALID_REQUEST, "Alasan abort wajib diisi");
-        while (rollingBack.contains(txId)) await(TimeUnit.SECONDS.toNanos(1));
-        if (status(txId) == TransactionStatus.COMMITTED) return result(txId, false, "Transaksi sudah committed");
-        if (status(txId) == TransactionStatus.ABORTED) return results.get(txId);
-        if (rollbackErrors.containsKey(txId)) throw rollbackErrors.get(txId);
-        markFailed(txId, reason);
-        rollingBack.add(txId);
-        long delay = rollbackDelayMs;
-        boolean failure = failRollback;
-        rollbackDelayMs = 0;
-        failRollback = false;
-        try {
-            while (hasAccess(txId)) await(TimeUnit.SECONDS.toNanos(1));
-            long start = System.nanoTime();
-            long remaining = timeoutNanos(delay);
-            while (remaining > 0) {
-                await(remaining);
-                remaining = timeoutNanos(delay) - (System.nanoTime() - start);
-            }
-            if (failure) throw error(CCMException.Code.ROLLBACK_FAILED, "Rollback gagal (simulasi mock)");
-            RollbackResult undo = frm.rollback(txId);
-            if (undo == null || (undo.status() != RollbackResult.Status.DONE && undo.status() != RollbackResult.Status.ALREADY_ABORTED)) {
-                throw error(CCMException.Code.ROLLBACK_FAILED, "FRM belum mengonfirmasi undo selesai");
-            }
-            statuses.put(txId, TransactionStatus.ABORTED);
-            results.put(txId, result(txId, true, "Transaksi sudah dibatalkan"));
-            return results.get(txId);
-        } catch (RuntimeException e) {
-            CCMException failureResult = new CCMException(CCMException.Code.ROLLBACK_FAILED, "Rollback gagal; status tetap FAILED", e);
-            rollbackErrors.put(txId, failureResult);
-            throw failureResult;
-        } finally {
-            rollingBack.remove(txId);
-            notifyAll();
-        }
+        return rollbackTransaction(txId, reason);
     }
 
     /** CC1: membaca protokol aktif. */
