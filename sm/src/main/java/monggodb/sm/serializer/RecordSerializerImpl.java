@@ -67,7 +67,7 @@ public class RecordSerializerImpl implements RecordSerializer {
             Column column = columnAt(schema, i);
             boolean isNull = (recordBytes[i / 8] & (1 << (i % 8))) != 0;
             if (isNull) {
-                values.add(Value.ofNull(column.dataType()));
+                values.add(Value.ofNull(column.getDataType()));
             } else {
                 DecodedValue decoded = decodeValue(recordBytes, column, offset);
                 values.add(decoded.value());
@@ -114,7 +114,7 @@ public class RecordSerializerImpl implements RecordSerializer {
             throw malformed("offset " + offset + " di luar batas (panjang " + bytes.length + ")");
         }
 
-        return switch (column.dataType()) {
+        return switch (column.getDataType()) {
             case INTEGER -> {
                 requireAvailable(bytes, offset, NUMERIC_SIZE, column);
                 int v = ByteBuffer.wrap(bytes, offset, NUMERIC_SIZE).getInt();
@@ -140,7 +140,7 @@ public class RecordSerializerImpl implements RecordSerializer {
                 requireAvailable(bytes, offset, VARCHAR_PREFIX_SIZE, column);
                 int length = ByteBuffer.wrap(bytes, offset, VARCHAR_PREFIX_SIZE).getShort() & 0xFFFF;
                 if (length > maxLength) {
-                    throw malformed("panjang VARCHAR " + length + " melebihi batas kolom " + column.name() + " (" + maxLength + ")");
+                    throw malformed("panjang VARCHAR " + length + " melebihi batas kolom " + column.getName() + " (" + maxLength + ")");
                 }
                 requireAvailable(bytes, offset + VARCHAR_PREFIX_SIZE, length, column);
                 String s = decodeUtf8(bytes, offset + VARCHAR_PREFIX_SIZE, length, column);
@@ -156,12 +156,12 @@ public class RecordSerializerImpl implements RecordSerializer {
         if (value.isNull()) {
             return 0;
         }
-        return switch (column.dataType()) {
+        return switch (column.getDataType()) {
             case INTEGER, FLOAT -> NUMERIC_SIZE;
             case CHAR -> checkTextLength(column);
             case VARCHAR -> {
                 if (!value.dataType().isText()) {
-                    throw new StorageException(StorageException.Code.TYPE_MISMATCH, "Kolom " + column.name() + " bertipe VARCHAR, tetapi nilai bertipe " + value.dataType());
+                    throw new StorageException(StorageException.Code.TYPE_MISMATCH, "Kolom " + column.getName() + " bertipe VARCHAR, tetapi nilai bertipe " + value.dataType());
                 }
                 yield VARCHAR_PREFIX_SIZE + utf8(value).length;
             }
@@ -172,31 +172,31 @@ public class RecordSerializerImpl implements RecordSerializer {
     public void validate(Value value, Column column) {
         requireNotNull(column, "column");
         if (value == null) {
-            throw new StorageException(StorageException.Code.INVALID_REQUEST, "Nilai untuk kolom " + column.name() + " tidak boleh null Java; gunakan Value.ofNull");
+            throw new StorageException(StorageException.Code.INVALID_REQUEST, "Nilai untuk kolom " + column.getName() + " tidak boleh null Java; gunakan Value.ofNull");
         }
         if (value.isNull()) {
-            if (column.notNull() || column.primaryKey()) {
-                throw new StorageException(StorageException.Code.NULL_NOT_ALLOWED, "Kolom " + column.name() + " tidak boleh NULL");
+            if (column.isNotNull() || column.isPrimaryKey()) {
+                throw new StorageException(StorageException.Code.NULL_NOT_ALLOWED, "Kolom " + column.getName() + " tidak boleh NULL");
             }
             return;
         }
 
-        DataType target = column.dataType();
+        DataType target = column.getDataType();
         if (!isCompatible(value.dataType(), target)) {
-            throw new StorageException(StorageException.Code.TYPE_MISMATCH, "Kolom " + column.name() + " bertipe " + target + ", tetapi nilai bertipe " + value.dataType());
+            throw new StorageException(StorageException.Code.TYPE_MISMATCH, "Kolom " + column.getName() + " bertipe " + target + ", tetapi nilai bertipe " + value.dataType());
         }
 
         if (target.isText()) {
             int maxLength = checkTextLength(column);
             int actual = utf8(value).length;
             if (actual > maxLength) {
-                throw new StorageException(StorageException.Code.VALUE_TOO_LONG, "Nilai untuk kolom " + column.name() + " sepanjang " + actual + " byte melebihi batas " + maxLength + " byte");
+                throw new StorageException(StorageException.Code.VALUE_TOO_LONG, "Nilai untuk kolom " + column.getName() + " sepanjang " + actual + " byte melebihi batas " + maxLength + " byte");
             }
         }
     }
 
     private void writeValue(ByteBuffer buf, Value value, Column column) {
-        switch (column.dataType()) {
+        switch (column.getDataType()) {
             case INTEGER -> buf.putInt(value.asInteger());
             case FLOAT -> buf.putFloat(value.dataType() == DataType.INTEGER ? (float) value.asInteger() : value.asFloat());
             case CHAR -> {
@@ -224,9 +224,9 @@ public class RecordSerializerImpl implements RecordSerializer {
     }
 
     private static int checkTextLength(Column column) {
-        int length = column.length();
+        int length = column.getLength();
         if (length <= 0 || length > MAX_TEXT_LENGTH) {
-            throw new StorageException(StorageException.Code.UNSUPPORTED_DATA_TYPE, "Panjang kolom " + column.name() + " (" + length + ") harus 1 sampai " + MAX_TEXT_LENGTH);
+            throw new StorageException(StorageException.Code.UNSUPPORTED_DATA_TYPE, "Panjang kolom " + column.getName() + " (" + length + ") harus 1 sampai " + MAX_TEXT_LENGTH);
         }
         return length;
     }
@@ -243,20 +243,20 @@ public class RecordSerializerImpl implements RecordSerializer {
                     .decode(ByteBuffer.wrap(bytes, offset, length));
             return chars.toString();
         } catch (CharacterCodingException e) {
-            throw malformed("byte UTF-8 tidak valid pada kolom " + column.name());
+            throw malformed("byte UTF-8 tidak valid pada kolom " + column.getName());
         }
     }
 
     private static void requireAvailable(byte[] bytes, int offset, int needed, Column column) {
         if (bytes.length - offset < needed) {
-            throw malformed("byte tidak cukup untuk kolom " + column.name() + " (butuh " + needed + ", tersisa " + (bytes.length - offset) + ")");
+            throw malformed("byte tidak cukup untuk kolom " + column.getName() + " (butuh " + needed + ", tersisa " + (bytes.length - offset) + ")");
         }
     }
 
     private static int checkArity(Row row, Schema schema) {
         int n = schema.size();
         if (row.size() != n) {
-            throw new StorageException(StorageException.Code.SCHEMA_MISMATCH, "Tabel " + schema.tableName() + " punya " + n + " kolom, tetapi row berisi " + row.size() + " nilai");
+            throw new StorageException(StorageException.Code.SCHEMA_MISMATCH, "Tabel " + schema.getTableName() + " punya " + n + " kolom, tetapi row berisi " + row.size() + " nilai");
         }
         return n;
     }
@@ -266,7 +266,7 @@ public class RecordSerializerImpl implements RecordSerializer {
     }
 
     private static Column columnAt(Schema schema, int index) {
-        return schema.columns().get(index);
+        return schema.getColumns().get(index);
     }
 
     private static void requireNotNull(Object o, String name) {
