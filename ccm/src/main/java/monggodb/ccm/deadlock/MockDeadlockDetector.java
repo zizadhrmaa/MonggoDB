@@ -7,6 +7,7 @@ import java.util.Set;
 
 import monggodb.contracts.shared.TxId;
 
+/** Mock internal deadlock detector (CC-07). Victim yang dikembalikan detectDeadlock diatur lewat {@link #setForcedVictims}. */
 public class MockDeadlockDetector {
 
     private List<TxId> forcedVictims = List.of();
