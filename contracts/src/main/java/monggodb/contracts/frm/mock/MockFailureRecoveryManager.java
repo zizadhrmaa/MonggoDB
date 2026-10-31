@@ -60,7 +60,7 @@ public class MockFailureRecoveryManager implements FailureRecoveryManager {
 
     @Override
     public synchronized LSN logChange(LogRecord record) {
-        if (record == null || !(record.type() == LogType.INSERT || record.type() == LogType.UPDATE || record.type() == LogType.DELETE)) {
+        if (record == null || !isDataChange(record.type())) {
             throw new IllegalArgumentException("logChange hanya menerima INSERT, UPDATE, atau DELETE");
         }
         status.putIfAbsent(record.txId(), Status.ACTIVE);
@@ -88,9 +88,19 @@ public class MockFailureRecoveryManager implements FailureRecoveryManager {
         if (s == null) return new RollbackResult(RollbackResult.Status.TX_UNKNOWN, "Transaksi " + txId + " tidak dikenal");
         if (s == Status.COMMITTED) return new RollbackResult(RollbackResult.Status.TX_COMMITTED, "Transaksi " + txId + " sudah commit");
         if (s == Status.ABORTED) return new RollbackResult(RollbackResult.Status.ALREADY_ABORTED, "Transaksi " + txId + " sudah dibatalkan");
+        // Isi log sama dengan FRM asli: entri pembatalan dari perubahan terakhir ke yang pertama, lalu ABORT.
+        List<LogRecord> changes = new ArrayList<>();
+        for (int i = log.size() - 1; i >= 0; i--) {
+            LogRecord r = log.get(i);
+            if (!txId.equals(r.txId())) continue;
+            if (r.type() == LogType.BEGIN) break;
+            if (isDataChange(r.type())) changes.add(r);
+        }
+        for (LogRecord r : changes) append(inverse(r));
         append(new LogRecord(LSN.NONE, txId, LogType.ABORT, null, null, null, null, 0L, LSN.NONE));
         status.put(txId, Status.ABORTED);
-        return new RollbackResult(RollbackResult.Status.DONE, "Transaksi " + txId + " dibatalkan (mock, data tidak diubah)");
+        return new RollbackResult(RollbackResult.Status.DONE,
+                "Transaksi " + txId + " dibatalkan, " + changes.size() + " perubahan dicatat pembatalannya (mock, data SM tidak diubah)");
     }
 
     @Override
@@ -136,6 +146,20 @@ public class MockFailureRecoveryManager implements FailureRecoveryManager {
                 record.before(), record.after(), System.currentTimeMillis(), prev));
         if (record.txId() != null) lastLsnOf.put(record.txId(), lsn);
         return lsn;
+    }
+
+    private static boolean isDataChange(LogType type) {
+        return type == LogType.INSERT || type == LogType.UPDATE || type == LogType.DELETE;
+    }
+
+    /** INSERT dibatalkan dengan DELETE, UPDATE dengan UPDATE before/after ditukar, DELETE dengan INSERT di RID yang sama. */
+    private static LogRecord inverse(LogRecord r) {
+        LogType type = switch (r.type()) {
+            case INSERT -> LogType.DELETE;
+            case DELETE -> LogType.INSERT;
+            default -> LogType.UPDATE;
+        };
+        return new LogRecord(LSN.NONE, r.txId(), type, r.table(), r.rid(), r.after(), r.before(), 0L, LSN.NONE);
     }
 
     private void checkFailure() {
