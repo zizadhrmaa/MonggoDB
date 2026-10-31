@@ -1,0 +1,9 @@
+## Transaksi yang menunggu tanpa siklus tidak dibatalkan (CC-07, CC-08)
+# Jeda lebih lama dari dua kali deadlockCheckIntervalMs (1000 ms) sebelum C1.
+W1(A=1) W2(A=2) W3(A=3) jeda(2500) C1 C2 C3
+harap-langkah 2 WAITING
+harap-langkah 3 WAITING
+harap T1 COMMITTED
+harap T2 COMMITTED
+harap T3 COMMITTED
+serializable ya

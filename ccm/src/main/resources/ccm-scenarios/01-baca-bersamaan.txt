@@ -1,0 +1,7 @@
+## Dua read bersamaan pada data yang sama (CC-06, CC-08)
+awal A=1
+R1(A) R2(A) C1 C2
+harap-langkah 2 ALLOWED
+harap T1 COMMITTED
+harap T2 COMMITTED
+serializable ya

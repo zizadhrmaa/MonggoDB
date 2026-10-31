@@ -1,0 +1,5 @@
+## Schedule manual yang tidak serializable, tanpa CCM (CC-09)
+mode manual
+# R1(A) sebelum W2(A): T1 -> T2; R2(A) sebelum W1(A): T2 -> T1; siklus.
+R1(A) R2(A) W1(A=1) W2(A=2) C1 C2
+serializable tidak

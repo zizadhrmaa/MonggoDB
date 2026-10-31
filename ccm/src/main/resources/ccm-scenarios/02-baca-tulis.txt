@@ -1,0 +1,10 @@
+## Read vs write: tidak ada dirty read/write (CC-06, CC-08)
+awal A=1
+R1(A) W2(A=5) C1 C2
+# Lock: T1 memegang shared lock sehingga W2 menunggu sampai C1.
+harap-langkah 2 WAITING @lock
+# Timestamp: TS(T2) > R-ts(A) dan read T1 sudah selesai, sehingga W2 diizinkan.
+harap-langkah 2 ALLOWED @timestamp
+harap T1 COMMITTED
+harap T2 COMMITTED
+serializable ya

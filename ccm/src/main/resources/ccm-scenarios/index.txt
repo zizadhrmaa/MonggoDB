@@ -1,0 +1,14 @@
+# Daftar skenario bawaan driver CCM, dijalankan berurutan.
+01-baca-bersamaan.txt
+02-baca-tulis.txt
+03-tulis-tulis.txt
+04-lock-ulang.txt
+05-deadlock-dua.txt
+06-deadlock-tiga.txt
+07-deadlock-upgrade.txt
+08-tunggu-tanpa-siklus.txt
+09-pelanggaran-timestamp.txt
+10-abort-pengguna.txt
+11-sistem.txt
+12-manual-serializable.txt
+13-manual-tidak-serializable.txt
