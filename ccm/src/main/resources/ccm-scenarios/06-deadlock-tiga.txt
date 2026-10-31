@@ -1,0 +1,10 @@
+## Deadlock tiga transaksi (CC-07)
+protokol lock
+# T1 menunggu T2 (B), T2 menunggu T3 (C), T3 menunggu T1 (A); victim T3.
+W1(A=1) W2(B=2) W3(C=3) W1(B=4) W2(C=5) W3(A=6) C2 C1
+harap-langkah 4 WAITING
+harap-langkah 5 WAITING
+harap T1 COMMITTED
+harap T2 COMMITTED
+harap T3 ABORTED DEADLOCK_VICTIM
+serializable ya

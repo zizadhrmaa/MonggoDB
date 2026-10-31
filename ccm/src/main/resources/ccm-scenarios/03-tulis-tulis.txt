@@ -1,0 +1,8 @@
+## Dua write pada data yang sama (CC-06, CC-08)
+awal A=1
+W1(A=5) W2(A=7) C1 C2
+# Lock: exclusive lock T1. Timestamp: penulis T1 belum commit.
+harap-langkah 2 WAITING
+harap T1 COMMITTED
+harap T2 COMMITTED
+serializable ya

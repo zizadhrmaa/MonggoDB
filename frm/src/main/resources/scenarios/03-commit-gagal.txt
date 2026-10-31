@@ -1,0 +1,16 @@
+## Penyimpanan COMMIT gagal: transaksi tidak dinyatakan committed (FR-01, FR-02)
+table t
+seed t 0:1 1 'a'
+
+begin T1
+update T1 t 0:1 1 'b'
+fail-log-write
+commit T1
+expect-result FAILED LOG_WRITE_FAILED
+# COMMIT yang gagal tidak tertinggal di log
+expect-log T1 BEGIN UPDATE
+abort T1
+expect-result DONE
+expect t 0:1 1 'a'
+expect-log T1 BEGIN UPDATE UPDATE ABORT
+expect-log-valid

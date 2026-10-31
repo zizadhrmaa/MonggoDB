@@ -1,0 +1,37 @@
+## Rollback transaksi beserta perubahannya (FR-04)
+table acc
+seed acc 0:1 1 100
+seed acc 0:2 2 200
+seed acc 0:3 3 300
+
+begin T1
+begin T2
+update T1 acc 0:1 1 110
+# record yang sama diubah beberapa kali
+update T1 acc 0:1 1 120
+insert T1 acc 0:4 4 400
+delete T1 acc 0:2
+update T2 acc 0:3 3 333
+commit T2
+expect acc 0:1 1 120
+
+abort T1
+expect-result DONE
+expect acc 0:1 1 100
+expect acc 0:2 2 200
+expect acc 0:4 absent
+# perubahan T2 yang sudah commit tetap dipertahankan
+expect acc 0:3 3 333
+expect-rows acc 3
+log T1
+expect-log T1 BEGIN UPDATE UPDATE INSERT DELETE INSERT DELETE UPDATE UPDATE ABORT
+
+# Permintaan ulang tidak mengubah data lagi; committed dan ID tidak dikenal menghasilkan status jelas
+abort T1
+expect-result ALREADY_ABORTED
+abort T2
+expect-result TX_COMMITTED
+abort T99
+expect-result TX_UNKNOWN
+expect acc 0:1 1 100
+expect-rows acc 3

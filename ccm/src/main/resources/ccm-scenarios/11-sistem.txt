@@ -1,0 +1,3 @@
+## beginTransaction bersamaan dan ganti protokol saat aktif (CC-01, CC-02)
+cek begin-bersamaan 20
+cek ganti-protokol

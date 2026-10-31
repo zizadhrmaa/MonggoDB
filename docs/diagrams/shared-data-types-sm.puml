@@ -1,0 +1,105 @@
+@startuml shared-data-types-sm
+' Shared data type milik Storage Manager, dibuat dari contracts/shared di main.
+!pragma layout smetana
+set separator none
+hide empty members
+hide circle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+package "Storage Manager" {
+  class "RID" <<dataType>> {
+    + pageId: int
+    + slotId: int
+  }
+  class "Row" <<dataType>> {
+    + rid: RID
+    + values: List<Value>
+  }
+  interface "RecordIterator" <<interface>> {
+    + hasNext(): boolean
+    + next(): Row
+    + reset(): void
+    + close(): void
+  }
+  class "Value" <<dataType>> {
+    + dataType: DataType
+    + rawValue: Object
+    + isNull: boolean
+  }
+  enum "DataType" <<enumeration>> {
+    INTEGER
+    FLOAT
+    CHAR
+    VARCHAR
+  }
+  class "Schema" <<dataType>> {
+    + tableName: String
+    + columns: List<Column>
+  }
+  class "Column" <<dataType>> {
+    + name: String
+    + table: String
+    + dataType: DataType
+    + length: int
+    + primaryKey: boolean
+    + notNull: boolean
+    + references: ForeignKeyRef
+  }
+  class "ForeignKeyRef" <<dataType>> {
+    + table: String
+    + column: String
+  }
+  class "TableStats" <<dataType>> {
+    + tableName: String
+    + recordCount: long
+    + blockCount: long
+    + avgRecordSize: double
+    + blockingFactor: double
+    + blockSize: int
+    + columnStats: Map<String, ColumnStats>
+  }
+  class "ColumnStats" <<dataType>> {
+    + column: String
+    + distinctCount: long
+    + nullCount: long
+    + minValue: Value
+    + maxValue: Value
+  }
+  class "IndexInfo" <<dataType>> {
+    + indexName: String
+    + table: String
+    + column: String
+    + type: IndexType
+  }
+  enum "IndexType" <<enumeration>> {
+    BTREE
+    HASH
+  }
+  class "StorageException" <<dataType>> {
+    + errorCode: StorageException.Code
+  }
+  enum "StorageException.Code" <<enumeration>> {
+    TABLE_NOT_FOUND
+    TABLE_ALREADY_EXISTS
+    TABLE_REFERENCED
+    COLUMN_NOT_FOUND
+    RECORD_NOT_FOUND
+    INVALID_RID
+    INVALID_REQUEST
+    SCHEMA_MISMATCH
+    RID_NOT_RESERVED
+    SNAPSHOT_NOT_FOUND
+    IO_ERROR
+    TYPE_MISMATCH
+    VALUE_TOO_LONG
+    NULL_NOT_ALLOWED
+    MALFORMED_RECORD
+    UNSUPPORTED_DATA_TYPE
+    INDEX_ALREADY_EXISTS
+    INDEX_NOT_FOUND
+    INDEX_NOT_SUPPORTED
+  }
+}
+@enduml

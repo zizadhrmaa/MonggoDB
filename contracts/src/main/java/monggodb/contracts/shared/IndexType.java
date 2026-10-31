@@ -7,7 +7,7 @@ package monggodb.contracts.shared;
 
 public enum IndexType {
     /**
-     * B+Tree untuk mendukung range query & pembacaan terurut
+     * B+Tree untuk mendukung range query dan pembacaan terurut
      */
     BTREE,
 

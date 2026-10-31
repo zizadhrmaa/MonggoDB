@@ -1,0 +1,81 @@
+@startuml shared-data-types-frm
+' Shared data type milik Failure Recovery Manager, dibuat dari contracts/shared di main.
+!pragma layout smetana
+set separator none
+hide empty members
+hide circle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+package "Failure Recovery Manager" {
+  class "LSN" <<dataType>> {
+    + value: long
+    + {static} NONE: LSN
+  }
+  class "LogRecord" <<dataType>> {
+    + lsn: LSN
+    + txId: TxId
+    + type: LogType
+    + table: String
+    + rid: RID
+    + before: Row
+    + after: Row
+    + timestamp: long
+    + prevLSN: LSN
+  }
+  enum "LogType" <<enumeration>> {
+    BEGIN
+    INSERT
+    UPDATE
+    DELETE
+    COMMIT
+    ABORT
+    CHECKPOINT_START
+    CHECKPOINT_END
+  }
+  class "RollbackResult" <<dataType>> {
+    + status: RollbackResult.Status
+    + message: String
+  }
+  enum "RollbackResult.Status" <<enumeration>> {
+    DONE
+    ALREADY_ABORTED
+    TX_COMMITTED
+    TX_UNKNOWN
+    FAILED
+  }
+  class "RecoveryResult" <<dataType>> {
+    + success: boolean
+    + maxTxId: TxId
+    + lastLSN: LSN
+    + redoneTx: List<TxId>
+    + undoneTx: List<TxId>
+    + message: String
+  }
+  class "RecoveryTarget" <<dataType>> {
+    + kind: RecoveryTarget.Kind
+    + time: long
+    + txId: TxId
+  }
+  enum "RecoveryTarget.Kind" <<enumeration>> {
+    TIME
+    TX_ID
+  }
+  class "CheckpointResult" <<dataType>> {
+    + success: boolean
+    + checkpointLSN: LSN
+    + message: String
+  }
+  class "FRMException" <<dataType>> {
+    + errorCode: FRMException.Code
+  }
+  enum "FRMException.Code" <<enumeration>> {
+    LOG_WRITE_FAILED
+    LOG_CORRUPTED
+    RECOVERY_FAILED
+    CHECKPOINT_FAILED
+    RESTORE_OUT_OF_RANGE
+  }
+}
+@enduml

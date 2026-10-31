@@ -1,0 +1,65 @@
+## Pemulihan historis ke transaksi atau waktu tertentu (FR-05)
+table acc
+seed acc 0:1 1 100
+seed acc 0:2 2 200
+
+begin T1
+update T1 acc 0:1 1 110
+commit T1
+mark setelahT1
+begin T2
+update T2 acc 0:2 2 220
+# T3 dimulai sebelum T4 commit, tetapi commit setelahnya
+begin T3
+update T3 acc 0:1 1 130
+begin T4
+insert T4 acc 0:3 3 300
+commit T4
+commit T3
+begin T5
+update T5 acc 0:3 3 333
+abort T5
+commit T2
+expect acc 0:1 1 130
+expect acc 0:2 2 220
+
+# Target di luar riwayat ditolak sebelum data diubah
+restore tx T99
+expect-result FAILED RESTORE_OUT_OF_RANGE
+restore time 1
+expect-result FAILED RESTORE_OUT_OF_RANGE
+expect acc 0:1 1 130
+
+# Sampai COMMIT T4: hanya T1 dan T4; T3 dan T2 commit setelahnya, T5 aborted
+restore tx T4
+expect-result OK redone=[Tx1, Tx4] undone=[Tx2, Tx3]
+expect acc 0:1 1 110
+expect acc 0:2 2 200
+expect acc 0:3 3 300
+
+# Hasil pemulihan tetap ada setelah restart
+crash
+expect-result OK redone=[] undone=[]
+expect acc 0:1 1 110
+expect acc 0:2 2 200
+expect acc 0:3 3 300
+
+# Target waktu di antara dua commit (setelah T1, sebelum T4)
+restore time setelahT1
+expect-result OK redone=[Tx1]
+expect acc 0:1 1 110
+expect acc 0:3 absent
+
+# T3 sudah dibuang oleh restore sebelumnya sehingga di luar riwayat aktif
+restore tx T3
+expect-result FAILED RESTORE_OUT_OF_RANGE
+
+# Transaksi baru setelah restore tetap dipulihkan
+begin T6
+update T6 acc 0:1 1 160
+commit T6
+crash
+expect-result OK redone=[Tx6] undone=[]
+expect acc 0:1 1 160
+expect acc 0:2 2 200
+expect acc 0:3 absent

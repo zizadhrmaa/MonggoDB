@@ -1,0 +1,7 @@
+## Deadlock akibat dua transaksi sama-sama upgrade S ke X (CC-07)
+protokol lock
+R1(A) R2(A) W1(A=1) W2(A=2) C1
+harap-langkah 3 WAITING
+harap T1 COMMITTED
+harap T2 ABORTED DEADLOCK_VICTIM
+serializable ya
