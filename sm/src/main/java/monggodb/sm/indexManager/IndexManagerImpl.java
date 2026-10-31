@@ -18,7 +18,6 @@ import monggodb.contracts.shared.Value;
 
 /**
  * Implementasi IndexManager yang menyimpan struktur index di memori.
- * Metadata index dan skema tabel diambil dari {@link IndexCatalog}, sehingga mudah diganti katalog tiruan pada driver.
  */
 public final class IndexManagerImpl implements IndexManager {
 
@@ -56,13 +55,12 @@ public final class IndexManagerImpl implements IndexManager {
         if (row == null || rid == null) {
             throw invalidRequest("row dan rid tidak boleh null");
         }
+
         Schema schema = catalog.getTableSchema(table);
         for (IndexInfo info : indexesOf(table)) {
             int column = requireColumn(schema, info);
             if (column >= row.size()) {
-                throw new StorageException(StorageException.Code.SCHEMA_MISMATCH,
-                        "Row berisi " + row.size() + " nilai, tetapi kolom index " + info.getIndexColumn()
-                                + " berada di posisi " + column);
+                throw new StorageException(StorageException.Code.SCHEMA_MISMATCH, "Row berisi " + row.size() + " nilai, tetapi kolom index " + info.getIndexColumn() + " berada di posisi " + column);
             }
             Value value = row.getValue(column);
             if (value == null || value.isNull()) {
@@ -82,9 +80,7 @@ public final class IndexManagerImpl implements IndexManager {
         for (IndexInfo info : indexesOf(table)) {
             int column = requireColumn(schema, info);
             if (column >= row.size()) {
-                throw new StorageException(StorageException.Code.SCHEMA_MISMATCH,
-                        "Row berisi " + row.size() + " nilai, tetapi kolom index " + info.getIndexColumn()
-                                + " berada di posisi " + column);
+                throw new StorageException(StorageException.Code.SCHEMA_MISMATCH, "Row berisi " + row.size() + " nilai, tetapi kolom index " + info.getIndexColumn() + " berada di posisi " + column);
             }
             Value value = row.getValue(column);
             if (value == null || value.isNull()) {
@@ -109,8 +105,7 @@ public final class IndexManagerImpl implements IndexManager {
         if (key == null || key.isNull()) {
             throw invalidRequest("Key lookup tidak boleh null atau NULL SQL");
         }
-        IndexInfo info = findIndex(table, indexName)
-                .orElseThrow(() -> indexNotFound(table, indexName));
+        IndexInfo info = findIndex(table, indexName).orElseThrow(() -> indexNotFound(table, indexName));
         return structure(info).search(key);
     }
 
@@ -125,24 +120,19 @@ public final class IndexManagerImpl implements IndexManager {
         if (upper != null && upper.isNull()) {
             throw invalidRequest("Batas atas tidak boleh NULL SQL");
         }
-        IndexInfo info = findIndex(table, indexName)
-                .orElseThrow(() -> indexNotFound(table, indexName));
+        IndexInfo info = findIndex(table, indexName).orElseThrow(() -> indexNotFound(table, indexName));
         return structure(info).rangeScan(lower, upper, lowerInclusive, upperInclusive);
     }
 
     private IndexStructure structure(IndexInfo info) {
-        return structures.computeIfAbsent(
-                structureKey(info.getIndexTable(), info.getIndexName()),
-                ignored -> createStructure(info));
+        return structures.computeIfAbsent(structureKey(info.getIndexTable(), info.getIndexName()), ignored -> createStructure(info));
     }
 
     private IndexStructure createStructure(IndexInfo info) {
         Schema schema = catalog.getTableSchema(info.getIndexTable());
         int column = requireColumn(schema, info);
         DataType keyType = schema.getColumns().get(column).getDataType();
-        return info.getIndexType() == IndexType.HASH
-                ? new HashIndex(keyType)
-                : new BPlusTree(keyType);
+        return info.getIndexType() == IndexType.HASH ? new HashIndex(keyType) : new BPlusTree(keyType);
     }
 
     private List<IndexInfo> indexesOf(String table) {
@@ -153,9 +143,7 @@ public final class IndexManagerImpl implements IndexManager {
     private static int requireColumn(Schema schema, IndexInfo info) {
         int column = schema.indexOf(info.getIndexColumn());
         if (column < 0) {
-            throw new StorageException(StorageException.Code.COLUMN_NOT_FOUND,
-                    "Kolom '" + info.getIndexColumn() + "' untuk index '" + info.getIndexName()
-                            + "' tidak ada di tabel " + info.getIndexTable());
+            throw new StorageException(StorageException.Code.COLUMN_NOT_FOUND, "Kolom '" + info.getIndexColumn() + "' untuk index '" + info.getIndexName() + "' tidak ada di tabel " + info.getIndexTable());
         }
         return column;
     }
@@ -175,7 +163,6 @@ public final class IndexManagerImpl implements IndexManager {
     }
 
     private static StorageException indexNotFound(String table, String indexName) {
-        return new StorageException(StorageException.Code.INDEX_NOT_FOUND,
-                "Index '" + indexName + "' tidak ada di tabel " + table);
+        return new StorageException(StorageException.Code.INDEX_NOT_FOUND, "Index '" + indexName + "' tidak ada di tabel " + table);
     }
 }
