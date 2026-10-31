@@ -21,7 +21,7 @@ public interface FRMBridge {
      * @return LSN catatan log mutasi yang dihasilkan FRM
      * @throws CCMException INVALID_REQUEST bila input tidak valid, atau LOG_FAILED bila pencatatan gagal
      * @calls FRM.logChange
-     * @calledBy CC1 (requestWrite, waitForAccess untuk write yang terbangun)
+     * @calledBy requestWrite
      */
     LSN forwardChangeLog(TxId txId, ChangeRequest change);
 
@@ -32,18 +32,21 @@ public interface FRMBridge {
      * @param reason alasan pembatalan transaksi
      * @return hasil akhir pembatalan transaksi
      * @throws CCMException TX_UNKNOWN, INVALID_REQUEST, atau ROLLBACK_FAILED bila undo gagal
-     * @calls FRM.rollback, CC2.releaseLockResources, CC4.releaseTimestampResources
-     * @calledBy CC1 (abortTransaction, completeAccess gagal, kegagalan log), CC2 (abort victim deadlock), CC4 (abort pelanggaran timestamp)
+     * @calls FRM.rollback, releaseResources
+     * @calledBy abortTransaction
      */
     TransactionResult rollbackTransaction(TxId txId, AbortReason reason);
 
     /**
      * Membersihkan state runtime CCM dan menginisialisasi counter TxId di atas maxTxId hasil pemulihan.
+     * <p>
+     * Catatan kontrak (Metode Internal No. 13): PIC implementasi asli metode ini dipegang oleh
+     * CC4 dan CC1; metode ini disertakan di sini sebagai stub mock Milestone 1.
      *
      * @param result hasil pemulihan dari FRM.recover()
      * @throws CCMException RECOVERY_FAILED bila hasil pemulihan tidak berhasil
-     * @calls CC2.resetLockState, CC4.resetTimestampState
-     * @calledBy CC1 (initialize)
+     * @calls resetLockState, resetTimestampState
+     * @calledBy initialize
      */
     void resetAfterRecovery(RecoveryResult result);
 }

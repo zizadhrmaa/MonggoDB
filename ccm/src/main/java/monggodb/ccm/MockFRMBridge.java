@@ -34,6 +34,15 @@ public class MockFRMBridge implements FRMBridge {
                 reason, "Mock rollback selesai");
     }
 
+    /**
+     * Stub mock untuk inisialisasi state CCM pasca-pemulihan (Metode Internal No. 13).
+     * Implementasi asli dipegang oleh PIC CC4 dan CC1.
+     *
+     * @param result hasil pemulihan dari FRM.recover()
+     * @throws CCMException RECOVERY_FAILED bila hasil pemulihan tidak berhasil
+     * @calls resetLockState, resetTimestampState
+     * @calledBy initialize
+     */
     @Override
     public void resetAfterRecovery(RecoveryResult result) {
         if (result == null || !result.success()) {
