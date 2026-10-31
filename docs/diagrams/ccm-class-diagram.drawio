@@ -1,0 +1,727 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="ccm-overview" name="CCM Class Diagram">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="3300" pageHeight="3300" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ccm-overview-api" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=76;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«interface CCM»&#xa;ConcurrencyControlManager" vertex="1">
+          <mxGeometry height="364" width="720" x="1173" y="29" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-api-methods" parent="ccm-overview-api" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ initialize(): RecoveryResult&#xa;+ beginTransaction(): TxId&#xa;+ requestRead(txId: TxId, resource: ResourceId): AccessResponse&#xa;+ requestWrite(txId: TxId, resource: ResourceId, change: ChangeRequest): AccessResponse&#xa;+ waitForAccess(txId: TxId, requestId: String, timeoutMs: long): AccessResponse&#xa;+ completeAccess(txId: TxId, requestId: String, success: boolean): void&#xa;+ commitTransaction(txId: TxId): TransactionResult&#xa;+ abortTransaction(txId: TxId, reason: AbortReason): TransactionResult&#xa;+ getTransactionStatus(txId: TxId): TransactionStatus&#xa;+ setProtocol(protocol: ProtocolType): void&#xa;+ getProtocol(): ProtocolType&#xa;+ blockNewTransactions(): void&#xa;+ waitUntilNoActive(timeoutMs: long): boolean&#xa;+ resumeTransactions(): void&#xa;+ shutdown(): void" vertex="1">
+          <mxGeometry height="288" width="723" x="-3" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-manager" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=76;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC1»&#xa;ConcurrencyControlManagerImpl" vertex="1">
+          <mxGeometry height="310" width="670" x="1198" y="511" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-manager-fields" parent="ccm-overview-manager" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- config: CCMConfig&#xa;- transactions: Map&lt;TxId, TransactionContext&gt;&#xa;- lockProtocol: LockBasedProtocol&#xa;- timestampProtocol: TimestampBasedProtocol&#xa;- frmBridge: FRMBridge&#xa;- admissionCounter: int&#xa;- ready: boolean" vertex="1">
+          <mxGeometry height="144" width="670" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-manager-methods-line" parent="ccm-overview-manager" style="shape=line;strokeColor=#000000;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry width="1150" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-manager-methods" parent="ccm-overview-manager" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- nextTxId(): TxId&#xa;- transitionState(txId: TxId, expectedState: TransactionStatus, nextState: TransactionStatus): void&#xa;- ensureActive(txId: TxId): TransactionContext&#xa;- dispatchAccess(txId, resource, mode, requestId): AccessResponse" vertex="1">
+          <mxGeometry height="90" width="670" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-mock" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=60;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«mock CCM»&#xa;MockConcurrencyControlManager" vertex="1">
+          <mxGeometry height="130" width="380" x="173" y="559" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-mock-fields" parent="ccm-overview-mock" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- transactionStates: Map&lt;TxId, TransactionStatus&gt;&#xa;- simulatedDecisions: Queue&lt;AccessDecision&gt;" vertex="1">
+          <mxGeometry height="54" width="380" y="61" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-driver" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=76;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC5»&#xa;CCMDriver" vertex="1">
+          <mxGeometry height="202" width="600" x="173" y="309" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-driver-fields" parent="ccm-overview-driver" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- ccm: ConcurrencyControlManager&#xa;- verifier: ScheduleVerifier" vertex="1">
+          <mxGeometry height="54" width="730" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-driver-methods-line" parent="ccm-overview-driver" style="shape=line;strokeColor=#000000;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry width="730" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-driver-methods" parent="ccm-overview-driver" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ main(args: String[]): void&#xa;+ runScenario(scenario: Scenario, frm: FailureRecoveryManager, dataStore: Map&lt;String,&#xa;    Integer&gt;): ScenarioReport" vertex="1">
+          <mxGeometry height="72" width="600" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-verifier" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=50;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC5»&#xa;ScheduleVerifier" vertex="1">
+          <mxGeometry height="158" width="490" x="173" y="29" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-verifier-methods" parent="ccm-overview-verifier" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ verifySchedule(schedule: List&lt;ScheduleOp&gt;): VerificationResult&#xa;- buildPrecedenceGraph(schedule): Map&lt;TxId, Set&lt;TxId&gt;&gt;&#xa;- topologicalSort(graph): List&lt;TxId&gt;" vertex="1">
+          <mxGeometry height="72" width="490" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-verification-result" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=60;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«internal CCM»&#xa;VerificationResult" vertex="1">
+          <mxGeometry height="184" width="370" x="733" y="29" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-verification-result-fields" parent="ccm-overview-verification-result" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ serializable: boolean&#xa;+ serialOrder: List&lt;TxId&gt;&#xa;+ cycle: List&lt;TxId&gt;&#xa;+ committedTx: List&lt;TxId&gt;&#xa;+ message: String" vertex="1">
+          <mxGeometry height="108" width="370" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-58" edge="1" parent="1" source="ccm-overview-lock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;entryX=0.75;entryY=1;entryDx=0;entryDy=0;dashed=1;" target="ccm-overview-response">
+          <mxGeometry relative="1" x="0.0134" as="geometry">
+            <Array as="points">
+              <mxPoint x="2580" y="318" />
+              <mxPoint x="2580" y="2055" />
+              <mxPoint x="638" y="2055" />
+            </Array>
+            <mxPoint x="2590" y="2130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-59" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-58" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="0.9251" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-lock" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=64;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC2»&#xa;LockBasedProtocol" vertex="1">
+          <mxGeometry height="316" width="520" x="2015" y="239" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-lock-fields" parent="ccm-overview-lock" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- lockTable: Map&lt;ResourceId, LockState&gt;&#xa;- waitQueues: Map&lt;ResourceId, Queue&lt;LockRequest&gt;&gt;&#xa;- running: boolean" vertex="1">
+          <mxGeometry height="72" width="500" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-lock-methods-line" parent="ccm-overview-lock" style="shape=line;strokeColor=#000000;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry width="730" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-lock-methods" parent="ccm-overview-lock" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ acquireLock(txId, resource, mode: {S,X}, requestId): AccessResponse&#xa;+ releaseResources(txId: TxId): void&#xa;+ wakeWaiters(resource: ResourceId): void&#xa;+ buildWaitForGraph(snapshot): Map&lt;TxId, Set&lt;TxId&gt;&gt;&#xa;+ detectDeadlock(graph): List&lt;TxId&gt;&#xa;- selectVictim(cycle): TxId&#xa;+ stopDetector(): void&#xa;+ resetLockState(): void" vertex="1">
+          <mxGeometry height="168" width="520" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-timestamp" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=76;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC4»&#xa;TimestampBasedProtocol" vertex="1">
+          <mxGeometry height="338" width="520" x="2015" y="659" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-timestamp-fields" parent="ccm-overview-timestamp" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- readTs: Map&lt;ResourceId, TxId&gt;&#xa;- writeTs: Map&lt;ResourceId, TxId&gt;&#xa;- uncommittedWriter: Map&lt;ResourceId, TxId&gt;&#xa;- inFlightAccess: Map&lt;ResourceId, Set&lt;AccessRequest&gt;&gt;&#xa;- waitQueues: Map&lt;ResourceId, PriorityQueue&lt;AccessRequest&gt;&gt;" vertex="1">
+          <mxGeometry height="108" width="510" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-timestamp-methods-line" parent="ccm-overview-timestamp" style="shape=line;strokeColor=#000000;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry width="730" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-timestamp-methods" parent="ccm-overview-timestamp" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ validateTimestamp(txId, resource, mode, requestId): AccessResponse&#xa;+ onAccessCompleted(txId, requestId, success): void&#xa;+ releaseResources(txId: TxId): void&#xa;+ wakeWaiters(resource: ResourceId): void&#xa;+ initialize(): RecoveryResult&#xa;- resetAfterRecovery(result: RecoveryResult): void&#xa;+ resetTimestampState(): void" vertex="1">
+          <mxGeometry height="144" width="510" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-73" edge="1" parent="1" source="ccm-overview-context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;entryX=0.903;entryY=1.024;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="ccm-overview-reason-fields">
+          <mxGeometry relative="1" x="0.0308" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="1473.5" />
+              <mxPoint x="100" y="2110" />
+              <mxPoint x="2379.9" y="2110" />
+            </Array>
+            <mxPoint x="100" y="2180.0000000000005" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-74" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-73" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="abortReason: 0...1" vertex="1">
+          <mxGeometry relative="1" x="-0.5443" y="4" as="geometry">
+            <mxPoint y="3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-context" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=58;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«internal CC1»&#xa;TransactionContext&#xa;" vertex="1">
+          <mxGeometry height="166" width="430" x="173" y="1349" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-context-fields" parent="ccm-overview-context" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ txId: TxId&#xa;+ status: TransactionStatus&#xa;+ abortReason: AbortReason [0..1]&#xa;+ outstandingRequests: Set&lt;String&gt;" vertex="1">
+          <mxGeometry height="90" width="420" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-change" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC3»&#xa;ChangeRequest" vertex="1">
+          <mxGeometry height="182" width="350" x="1358" y="1237" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-change-fields" parent="ccm-overview-change" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ operationId: String&#xa;+ type: LogType {INSERT, UPDATE, DELETE}&#xa;+ table: String&#xa;+ rid: RID&#xa;+ before: Row [0..1]&#xa;+ after: Row [0..1]" vertex="1">
+          <mxGeometry height="126" width="350" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-schedule-op" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=60;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«internal CC5»&#xa;ScheduleOp" vertex="1">
+          <mxGeometry height="172" width="480" x="173" y="749" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-schedule-op-fields" parent="ccm-overview-schedule-op" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ seq: long&#xa;+ txId: TxId&#xa;+ kind: {READ, WRITE, COMMIT, ABORT}&#xa;+ resource: ResourceId [0..1]" vertex="1">
+          <mxGeometry height="90" width="480" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-txid" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«immutable CC1»&#xa;TxId" vertex="1">
+          <mxGeometry height="164" width="400" x="173" y="1619" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-txid-fields" parent="ccm-overview-txid" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- value: long {readOnly}" vertex="1">
+          <mxGeometry height="36" width="390" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-txid-methods-line" parent="ccm-overview-txid" style="shape=line;strokeColor=#000000;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry width="520" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-txid-methods" parent="ccm-overview-txid" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ compareTo(other: TxId): int&#xa;+ equals(other: Object): boolean&#xa;+ hashCode(): int" vertex="1">
+          <mxGeometry height="72" width="400" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-status" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«enumeration CC1»&#xa;TransactionStatus" vertex="1">
+          <mxGeometry height="164" width="520" x="963" y="1458" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-status-fields" parent="ccm-overview-status" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="ACTIVE&#xa;PARTIALLY_COMMITTED&#xa;FAILED&#xa;ABORTED&#xa;COMMITTED" vertex="1">
+          <mxGeometry height="108" width="520" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-protocol" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«enumeration CC1»&#xa;ProtocolType" vertex="1">
+          <mxGeometry height="110" width="520" x="173" y="1177" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-protocol-fields" parent="ccm-overview-protocol" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="LOCK_BASED&#xa;TIMESTAMP_BASED" vertex="1">
+          <mxGeometry height="54" width="520" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-decision" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«enumeration CC1»&#xa;AccessDecision" vertex="1">
+          <mxGeometry height="128" width="520" x="1003" y="1835" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-decision-fields" parent="ccm-overview-decision" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="ALLOWED&#xa;WAITING&#xa;ABORTED" vertex="1">
+          <mxGeometry height="72" width="520" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-71" edge="1" parent="1" source="ccm-overview-reason" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;endArrow=none;endFill=0;" target="ccm-overview-response-fields">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2332.5" y="2090" />
+              <mxPoint x="328" y="2090" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-72" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-71" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="abortReason: 0..1" vertex="1">
+          <mxGeometry relative="1" x="0.9049" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-reason" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«enumeration CC1»&#xa;AbortReason" vertex="1">
+          <mxGeometry height="182" width="310" x="2100" y="1455" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-reason-fields" parent="ccm-overview-reason" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="USER_REQUEST&#xa;DEADLOCK_VICTIM&#xa;TIMESTAMP_VIOLATION&#xa;LOG_FAILED&#xa;ACCESS_FAILED&#xa;DISCONNECT" vertex="1">
+          <mxGeometry height="126" width="310" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-resource" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC1 bersama CC2»&#xa;ResourceId" vertex="1">
+          <mxGeometry height="128" width="520" x="2015" y="29" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-resource-fields" parent="ccm-overview-resource" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ table: String&#xa;+ granularity: {TABLE}&#xa;+ rid: RID [0..1]" vertex="1">
+          <mxGeometry height="72" width="520" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-config" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«configuration CC1»&#xa;CCMConfig" vertex="1">
+          <mxGeometry height="128" width="520" x="173" y="977" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-config-fields" parent="ccm-overview-config" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ protocol: ProtocolType = LOCK_BASED&#xa;+ deadlockCheckIntervalMs: long = 1000&#xa;+ deadlockResolveTimeoutMs: long = 5000" vertex="1">
+          <mxGeometry height="72" width="520" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-response" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC1»&#xa;AccessResponse" vertex="1">
+          <mxGeometry height="200" width="620" x="173" y="1835" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-response-fields" parent="ccm-overview-response" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ txId: TxId&#xa;+ requestId: String&#xa;+ decision: AccessDecision&#xa;+ lsn: LSN [0..1]&#xa;+ abortReason: AbortReason [0..1]&#xa;+ blockedBy: List&lt;TxId&gt; [0..1]&#xa;+ message: String" vertex="1">
+          <mxGeometry height="144" width="620" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-result" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC1»&#xa;TransactionResult" vertex="1">
+          <mxGeometry height="164" width="520" x="1523" y="1455" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-result-fields" parent="ccm-overview-result" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ txId: TxId&#xa;+ success: boolean&#xa;+ status: TransactionStatus&#xa;+ abortReason: AbortReason [0..1]&#xa;+ message: String" vertex="1">
+          <mxGeometry height="108" width="520" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-exception" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=60;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«exception CC1»&#xa;CCMException" vertex="1">
+          <mxGeometry height="130" width="220" x="1768" y="1237" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-exception-fields" parent="ccm-overview-exception" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ code: enum&#xa;+ message: String" vertex="1">
+          <mxGeometry height="54" width="220" y="69" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-api" edge="1" parent="1" source="ccm-overview-manager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=block;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-api" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-mock-api" edge="1" parent="1" source="ccm-overview-mock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=block;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" target="ccm-overview-api" value="">
+          <mxGeometry relative="1" x="0.1883" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="570" />
+              <mxPoint x="910" y="283.8" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-driver-api" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="ccm-overview-api" value="memakai facade">
+          <mxGeometry relative="1" x="0.0654" as="geometry">
+            <Array as="points">
+              <mxPoint x="893" y="439" />
+              <mxPoint x="893" y="262" />
+              <mxPoint x="1130" y="262" />
+              <mxPoint x="1130" y="120" />
+            </Array>
+            <mxPoint x="773" y="439" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-driver-verifier" edge="1" parent="1" source="ccm-overview-driver" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0;exitY=0.65;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-verifier" value="verifikasi schedule">
+          <mxGeometry relative="1" x="0.0857" as="geometry">
+            <Array as="points">
+              <mxPoint x="133" y="440.3" />
+              <mxPoint x="133" y="229" />
+              <mxPoint x="285.5" y="229" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-lock" edge="1" parent="1" source="ccm-overview-manager-fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="ccm-overview-lock-methods" value="lockProtocol: 1">
+          <mxGeometry relative="1" x="-0.0329" as="geometry">
+            <Array as="points">
+              <mxPoint x="1898" y="659" />
+              <mxPoint x="1898" y="599" />
+              <mxPoint x="2353" y="599" />
+              <mxPoint x="2353" y="555" />
+            </Array>
+            <mxPoint x="1868" y="647" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-timestamp" edge="1" parent="1" source="ccm-overview-manager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-timestamp" value="timestampProtocol: 1">
+          <mxGeometry relative="1" x="0.0056" as="geometry">
+            <Array as="points">
+              <mxPoint x="1868" y="755.5" />
+              <mxPoint x="1933" y="755.5" />
+              <mxPoint x="1933" y="635" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-bridge" edge="1" parent="1" source="ccm-overview-manager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-bridge" value="frmBridge: 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-context" edge="1" parent="1" source="ccm-overview-bridge-methods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="ccm-overview-context" value="transactions: 0..*">
+          <mxGeometry relative="1" x="0.3828" as="geometry">
+            <Array as="points">
+              <mxPoint x="1193" y="1039.5" />
+              <mxPoint x="1193" y="1121" />
+              <mxPoint x="873" y="1121" />
+              <mxPoint x="873" y="1432" />
+            </Array>
+            <mxPoint x="983" y="1069.0000000000002" as="sourcePoint" />
+            <mxPoint x="613" y="1419" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-bridge-change" edge="1" parent="1" source="ccm-overview-bridge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-change" value="change: 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-verifier-result" edge="1" parent="1" source="ccm-overview-verifier" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-verification-result-fields" value="return">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-verifier-schedule" edge="1" parent="1" source="ccm-overview-verifier-methods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="ccm-overview-schedule-op" value="schedule: 0..*">
+          <mxGeometry relative="1" x="-0.6486" as="geometry">
+            <Array as="points">
+              <mxPoint x="43" y="130" />
+              <mxPoint x="43" y="792" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-context-id" edge="1" parent="1" source="ccm-overview-context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-txid" value="txId: 1">
+          <mxGeometry relative="1" x="0.4971" as="geometry">
+            <Array as="points">
+              <mxPoint x="302" y="1589" />
+              <mxPoint x="373" y="1589" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-context-status" edge="1" parent="1" source="ccm-overview-context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=1;exitY=0.65;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-status" value="status: 1">
+          <mxGeometry relative="1" x="0.2009" as="geometry">
+            <Array as="points">
+              <mxPoint x="603" y="1469" />
+              <mxPoint x="913" y="1469" />
+              <mxPoint x="913" y="1670" />
+              <mxPoint x="1093" y="1670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-lock-resource" edge="1" parent="1" source="ccm-overview-lock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" value="resource: 1">
+          <mxGeometry relative="1" x="0.0055" as="geometry">
+            <Array as="points">
+              <mxPoint x="2380" y="199" />
+              <mxPoint x="2285" y="199" />
+            </Array>
+            <mxPoint x="2285" y="159" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-config" edge="1" parent="1" source="ccm-overview-manager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0;exitY=0.55;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-config" value="config: 1">
+          <mxGeometry relative="1" x="0.0014" as="geometry">
+            <Array as="points">
+              <mxPoint x="1170" y="681.5" />
+              <mxPoint x="1170" y="959.5" />
+              <mxPoint x="433" y="959.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-config-protocol" edge="1" parent="1" source="ccm-overview-config-fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-protocol" value="protocol: 1">
+          <mxGeometry relative="1" x="0.6524" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-response-decision" edge="1" parent="1" source="ccm-overview-response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-decision" value="decision: 1">
+          <mxGeometry relative="1" x="0.6203" as="geometry">
+            <Array as="points">
+              <mxPoint x="638" y="1805" />
+              <mxPoint x="903" y="1805" />
+              <mxPoint x="903" y="2005" />
+              <mxPoint x="1263" y="2005" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-response-id" edge="1" parent="1" source="ccm-overview-response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=0.2;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.8;entryDx=0;entryDy=0;" target="ccm-overview-txid" value="txId: 1">
+          <mxGeometry relative="1" x="-0.153" as="geometry">
+            <Array as="points">
+              <mxPoint x="297" y="1810" />
+              <mxPoint x="610" y="1810" />
+              <mxPoint x="610" y="1750.2" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-result-status" edge="1" parent="1" source="JQDohcKIkNYm_8n3RCNs-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" target="ccm-overview-txid" value="txId: 1">
+          <mxGeometry relative="1" x="-0.7238" as="geometry">
+            <Array as="points">
+              <mxPoint x="1630" y="1790" />
+              <mxPoint x="1353" y="1790" />
+              <mxPoint x="1353" y="1742" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-edge-result-reason" edge="1" parent="1" source="ccm-overview-result-fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-reason" value="abortReason: 0..1">
+          <mxGeometry relative="1" x="0.1679" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-edge-manager-exception" edge="1" parent="1" source="ccm-overview-bridge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ccm-overview-exception" value="throws">
+          <mxGeometry relative="1" x="0.3333" as="geometry">
+            <Array as="points">
+              <mxPoint x="1878" y="1027" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XOB7iviOetp9btYWGrOp-1" edge="1" parent="1" source="ccm-overview-manager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;exitX=1;exitY=0.8;exitDx=0;exitDy=0;" target="ccm-overview-bridge" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1868" y="787" />
+              <mxPoint x="1948" y="787" />
+              <mxPoint x="1948" y="997" />
+            </Array>
+            <mxPoint x="2108" y="895" as="sourcePoint" />
+            <mxPoint x="2988" y="2587" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ccm-overview-bridge" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=76;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC3»&#xa;FRMBridge&#xa;" vertex="1">
+          <mxGeometry height="220" width="490" x="1288" y="887" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-bridge-fields" parent="ccm-overview-bridge" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- frm: FailureRecoveryManager&#xa;- loggedOperations: Map&lt;(TxId, operationId), LSN&gt;" vertex="1">
+          <mxGeometry height="54" width="490" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-bridge-methods-line" parent="ccm-overview-bridge" style="shape=line;strokeColor=#000000;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry width="1150" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-bridge-methods" parent="ccm-overview-bridge" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ logBegin(txId: TxId): LSN&#xa;+ forwardChangeLog(txId: TxId, change: ChangeRequest): LSN&#xa;+ logCommit(txId: TxId): LSN&#xa;+ rollbackTransaction(txId: TxId, reason: AbortReason): TransactionResult" vertex="1">
+          <mxGeometry height="90" width="490" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="XOB7iviOetp9btYWGrOp-4" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«CC1»&#xa;AccessRequest" vertex="1">
+          <mxGeometry height="130" width="350" x="2015" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="XOB7iviOetp9btYWGrOp-5" parent="XOB7iviOetp9btYWGrOp-4" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="- txId: TxId&#xa;- timestamp: int&#xa;- accessType: AccessType&#xa;" vertex="1">
+          <mxGeometry height="74" width="350" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="XOB7iviOetp9btYWGrOp-10" edge="1" parent="1" source="XOB7iviOetp9btYWGrOp-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;endArrow=diamondThin;endFill=1;startArrow=none;startFill=0;" value="">
+          <mxGeometry relative="1" x="0.4255" as="geometry">
+            <Array as="points">
+              <mxPoint x="2430" y="1123" />
+              <mxPoint x="2430" y="1000" />
+            </Array>
+            <mxPoint x="2520" y="1197" as="sourcePoint" />
+            <mxPoint x="2430" y="1000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-6" connectable="0" parent="XOB7iviOetp9btYWGrOp-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="inFlightAccess, waitQueues" vertex="1">
+          <mxGeometry relative="1" x="0.7234" y="-3" as="geometry">
+            <mxPoint x="14" y="33" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-1" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«enumeration CC1»&#xa;AccessType" vertex="1">
+          <mxGeometry height="130" width="210" x="2015" y="1237" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-2" parent="JQDohcKIkNYm_8n3RCNs-1" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="READ&#xa;WRITE" vertex="1">
+          <mxGeometry height="74" width="210" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-4" edge="1" parent="1" source="XOB7iviOetp9btYWGrOp-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;entryX=0.55;entryY=-0.005;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="JQDohcKIkNYm_8n3RCNs-1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2130" y="1227" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-5" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="accessType: 1" vertex="1">
+          <mxGeometry relative="1" x="0.559" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-7" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="« internal CC1»&#xa;LockState" vertex="1">
+          <mxGeometry height="121" width="277" x="2258" y="1237" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-8" parent="JQDohcKIkNYm_8n3RCNs-7" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ sharedHolders: Set&lt;TxId&gt;&#xa;+ exclusiveHolder: TxId [0..1]" vertex="1">
+          <mxGeometry height="65" width="277" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-12" edge="1" parent="1" source="JQDohcKIkNYm_8n3RCNs-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;endArrow=none;endFill=0;startArrow=none;startFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="ccm-overview-lock" value="">
+          <mxGeometry relative="1" x="0.2167" as="geometry">
+            <Array as="points">
+              <mxPoint x="2396.5" y="1190" />
+              <mxPoint x="2550" y="1190" />
+              <mxPoint x="2550" y="600" />
+              <mxPoint x="2405" y="600" />
+            </Array>
+            <mxPoint x="2375" y="1133" as="sourcePoint" />
+            <mxPoint x="2490" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-14" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="lockTable: 0...*" vertex="1">
+          <mxGeometry relative="1" x="0.8521" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-16" edge="1" parent="1" source="JQDohcKIkNYm_8n3RCNs-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" target="ccm-overview-txid" value="">
+          <mxGeometry relative="1" x="-0.8276" as="geometry">
+            <Array as="points">
+              <mxPoint x="2480" y="1690" />
+              <mxPoint x="573" y="1690" />
+            </Array>
+            <mxPoint x="1100" y="1800" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-20" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-16" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="sharedHolders: 0..*, exclusiveHolder: 0..1" vertex="1">
+          <mxGeometry relative="1" x="0.7837" y="6" as="geometry">
+            <mxPoint y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-18" edge="1" parent="1" source="ccm-overview-schedule-op-fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;endArrow=none;endFill=0;" value="">
+          <mxGeometry relative="1" x="-0.1444" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="866" />
+              <mxPoint x="100" y="1450" />
+            </Array>
+            <mxPoint x="170" y="1450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-19" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-18" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="txId: 1" vertex="1">
+          <mxGeometry relative="1" x="-0.4051" y="-4" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-26" edge="1" parent="1" source="JQDohcKIkNYm_8n3RCNs-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;endArrow=none;endFill=0;" target="JQDohcKIkNYm_8n3RCNs-25" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-27" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-26" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="mode: 1" vertex="1">
+          <mxGeometry relative="1" x="0.0705" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-21" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«internal CC2»&#xa;LockRequest" vertex="1">
+          <mxGeometry height="121" width="277" x="1630" y="1720" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-22" parent="JQDohcKIkNYm_8n3RCNs-21" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ txId: TxId&#xa;+ requestId: String&#xa;+ mode: LockMode" vertex="1">
+          <mxGeometry height="65" width="277" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-23" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;dashed=0;endArrow=none;endFill=0;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=12;fontColor=#000000;labelBackgroundColor=#ffffff;entryX=0.764;entryY=0.989;entryDx=0;entryDy=0;entryPerimeter=0;" target="ccm-overview-status-fields" value="status: 1">
+          <mxGeometry relative="1" x="-0.3174" as="geometry">
+            <Array as="points">
+              <mxPoint x="1793" y="1640" />
+              <mxPoint x="1363" y="1640" />
+              <mxPoint x="1363" y="1620.8" />
+            </Array>
+            <mxPoint x="1793" y="1629" as="sourcePoint" />
+            <mxPoint x="1363" y="1632" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-24" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«enumeration CC2»&#xa;LockMode" vertex="1">
+          <mxGeometry height="121" width="277" x="2000" y="1720" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-25" parent="JQDohcKIkNYm_8n3RCNs-24" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="S&#xa;X" vertex="1">
+          <mxGeometry height="65" width="277" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-30" edge="1" parent="1" source="JQDohcKIkNYm_8n3RCNs-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;endArrow=none;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1.003;entryY=0.351;entryDx=0;entryDy=0;entryPerimeter=0;" target="ccm-overview-lock-methods" value="">
+          <mxGeometry relative="1" x="-0.8649" as="geometry">
+            <Array as="points">
+              <mxPoint x="1768.5" y="1861" />
+              <mxPoint x="2300" y="1861" />
+              <mxPoint x="2300" y="1710" />
+              <mxPoint x="2560" y="1710" />
+              <mxPoint x="2560" y="446" />
+            </Array>
+            <mxPoint x="1917" y="1791" as="sourcePoint" />
+            <mxPoint x="2560" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-51" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-30" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="waitQueues: 0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.8264" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-32" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«internal CC5»&#xa;Scenario" vertex="1">
+          <mxGeometry height="121" width="277" x="726" y="749" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-33" parent="JQDohcKIkNYm_8n3RCNs-32" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ name: String&#xa;+ protocol: ProtocolType&#xa;+ schedule: List&lt;ScheduleOp&gt;" vertex="1">
+          <mxGeometry height="65" width="277" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-34" edge="1" parent="1" style="endArrow=open;html=1;rounded=0;defaultLabelBackgroundColor=page;entryX=0;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;dashed=1;endFill=0;" target="JQDohcKIkNYm_8n3RCNs-33" value="">
+          <mxGeometry height="50" relative="1" width="50" x="0.059" as="geometry">
+            <Array as="points">
+              <mxPoint x="567.8" y="730" />
+              <mxPoint x="670" y="730" />
+              <mxPoint x="670" y="837.5" />
+            </Array>
+            <mxPoint x="570" y="510" as="sourcePoint" />
+            <mxPoint x="930" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-40" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-34" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="parameter" vertex="1">
+          <mxGeometry relative="1" x="-1" y="2" as="geometry">
+            <mxPoint x="13" y="32" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-35" edge="1" parent="1" source="ccm-overview-schedule-op-fields" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=1;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" target="JQDohcKIkNYm_8n3RCNs-33" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="689.5" y="866" />
+              <mxPoint x="689.5" y="890" />
+              <mxPoint x="864.5" y="890" />
+            </Array>
+            <mxPoint x="686" y="526" as="sourcePoint" />
+            <mxPoint x="736" y="848" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-39" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-35" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="schedule: 0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.2819" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-37" edge="1" parent="1" source="ccm-overview-protocol" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=1;exitY=0.75;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;entryX=0.77;entryY=1.002;entryDx=0;entryDy=0;entryPerimeter=0;" target="JQDohcKIkNYm_8n3RCNs-33" value="">
+          <mxGeometry height="50" relative="1" width="50" x="0.5039" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="1259.5" />
+              <mxPoint x="830" y="920" />
+              <mxPoint x="939.3" y="920" />
+            </Array>
+            <mxPoint x="663" y="876" as="sourcePoint" />
+            <mxPoint x="875" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-38" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-37" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="protocol: 1" vertex="1">
+          <mxGeometry relative="1" x="0.0516" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-41" parent="1" style="swimlane;html=0;fontStyle=1;align=center;verticalAlign=top;horizontal=1;startSize=56;collapsible=0;whiteSpace=wrap;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;fontFamily=Helvetica;fontSize=14;spacingTop=7;" value="«internal CC5»&#xa;ScenarioReport" vertex="1">
+          <mxGeometry height="144" width="277" x="726" y="594" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-42" parent="JQDohcKIkNYm_8n3RCNs-41" style="text;html=0;strokeColor=none;fillColor=none;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=top;fontFamily=Helvetica;fontSize=13;fontStyle=0;fontColor=#000000;spacingLeft=10;spacingRight=10;spacingTop=7;" value="+ scenarioName: String&#xa;+ verification: VerificationResult&#xa;+ finalData: Map&lt;String, Integer&gt;&#xa;+ errors: List&lt;String&gt;" vertex="1">
+          <mxGeometry height="72" width="277" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-44" edge="1" parent="1" style="endArrow=open;html=1;rounded=0;defaultLabelBackgroundColor=page;edgeStyle=orthogonalEdgeStyle;dashed=1;endFill=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" x="-0.3131" as="geometry">
+            <Array as="points">
+              <mxPoint x="708.2" y="550" />
+              <mxPoint x="800" y="550" />
+              <mxPoint x="800" y="592.7" />
+            </Array>
+            <mxPoint x="708.2" y="510" as="sourcePoint" />
+            <mxPoint x="800" y="592.7" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-45" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-44" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="-1" y="2" as="geometry">
+            <mxPoint x="13" y="32" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-48" edge="1" parent="1" source="ccm-overview-verification-result-fields" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;edgeStyle=orthogonalEdgeStyle;endFill=0;exitX=0.345;exitY=1.018;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="JQDohcKIkNYm_8n3RCNs-41" value="">
+          <mxGeometry height="50" relative="1" width="50" x="-0.2112" as="geometry">
+            <Array as="points">
+              <mxPoint x="860.7" y="594" />
+            </Array>
+            <mxPoint x="718.2" y="520" as="sourcePoint" />
+            <mxPoint x="860.7" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-49" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-48" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="verification: 1" vertex="1">
+          <mxGeometry relative="1" x="-1" y="2" as="geometry">
+            <mxPoint y="32" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-50" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="130" width="660" x="1580" y="1887" as="geometry" />
+        </mxCell>
+        <mxCell id="ccm-overview-scope-note" parent="1" style="text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=14;fontColor=#000000;fontStyle=1;spacing=0;" value="Keterangan:&#xa;    +: publik&#xa;    -: privat&#xa;    garis putus-putus dengan segitiga berongga: implementasi interface&#xa;    garis penuh: asosiasi&#xa;    panah putus-putus: dependensi" vertex="1">
+          <mxGeometry height="100" width="631" x="1608" y="1898" as="geometry" />
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-52" edge="1" parent="1" source="ccm-overview-api-methods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;entryX=0.875;entryY=0.012;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" target="ccm-overview-response">
+          <mxGeometry relative="1" x="0.0002" as="geometry">
+            <Array as="points">
+              <mxPoint x="1350.8" y="470" />
+              <mxPoint x="1120" y="470" />
+              <mxPoint x="1120" y="1310" />
+              <mxPoint x="715.5" y="1310" />
+            </Array>
+            <mxPoint x="970" y="1290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-53" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-52" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="-0.9503" y="3" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-54" edge="1" parent="1" source="ccm-overview-manager-methods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.088;exitY=1.01;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;entryX=0.892;entryY=0.003;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;exitPerimeter=0;" target="ccm-overview-response">
+          <mxGeometry relative="1" x="-0.3306" as="geometry">
+            <Array as="points">
+              <mxPoint x="1257" y="1000" />
+              <mxPoint x="1130" y="1000" />
+              <mxPoint x="1130" y="1320" />
+              <mxPoint x="726" y="1320" />
+            </Array>
+            <mxPoint x="1361" y="403" as="sourcePoint" />
+            <mxPoint x="726" y="1847" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-55" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-54" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="-0.9275" y="3" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-60" edge="1" parent="1" source="ccm-overview-timestamp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;dashed=1;" target="ccm-overview-response-fields">
+          <mxGeometry relative="1" x="-0.1382" as="geometry">
+            <Array as="points">
+              <mxPoint x="2590" y="828" />
+              <mxPoint x="2590" y="2070" />
+              <mxPoint x="647.3" y="2070" />
+            </Array>
+            <mxPoint x="2545" y="328" as="sourcePoint" />
+            <mxPoint x="648" y="2045" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-61" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-60" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="0.908" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-63" edge="1" parent="1" source="ccm-overview-schedule-op-fields" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" target="ccm-overview-resource" value="">
+          <mxGeometry relative="1" x="-0.9023" as="geometry">
+            <Array as="points">
+              <mxPoint x="20" y="860" />
+              <mxPoint x="20" y="10" />
+              <mxPoint x="2275" y="10" />
+            </Array>
+            <mxPoint x="160" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-64" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-63" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="resource: 0..1" vertex="1">
+          <mxGeometry relative="1" x="-0.8932" y="2" as="geometry">
+            <mxPoint x="29" y="18" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-65" edge="1" parent="1" source="ccm-overview-bridge" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.399;entryY=0.017;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;dashed=1;" target="ccm-overview-result">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1655.5" y="1190" />
+              <mxPoint x="1730.5" y="1190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-66" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-65" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="-0.6994" y="-2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-67" edge="1" parent="1" source="ccm-overview-manager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.924;entryY=0.013;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;dashed=1;" target="ccm-overview-result">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1700.5" y="850" />
+              <mxPoint x="2003.5" y="850" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-68" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-67" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="-0.707" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-69" edge="1" parent="1" source="ccm-overview-api-methods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.458;entryY=0.011;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;dashed=1;" target="ccm-overview-result">
+          <mxGeometry relative="1" x="-0.0002" as="geometry">
+            <Array as="points">
+              <mxPoint x="1712.3" y="440" />
+              <mxPoint x="2000" y="440" />
+              <mxPoint x="2000" y="1170" />
+              <mxPoint x="1761.2" y="1170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JQDohcKIkNYm_8n3RCNs-70" connectable="0" parent="JQDohcKIkNYm_8n3RCNs-69" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="return" vertex="1">
+          <mxGeometry relative="1" x="-0.9844" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
