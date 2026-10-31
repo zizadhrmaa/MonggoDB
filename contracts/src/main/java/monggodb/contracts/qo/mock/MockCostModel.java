@@ -75,8 +75,20 @@ public class MockCostModel {
             default -> 0.0;
         };
 
+        TableStats scanStats = DEFAULT_STATS;
+        if (root instanceof ScanNode scan && storageManager != null && scan.getTable() != null) {
+            try {
+                TableStats s = storageManager.getStats(scan.getTable());
+                if (s != null) {
+                    scanStats = s;
+                }
+            } catch (StorageException ignored) {
+                // fallback ke DEFAULT_STATS
+            }
+        }
+
         double nodeCost = switch (root.getType()) {
-            case SCAN -> (double) getStats(((ScanNode) root).getTable()).getBlockCount();
+            case SCAN -> (double) scanStats.getBlockCount();
             case INDEX_SCAN -> 0.5;
             case JOIN -> {
                 int m = Math.max(3, MdbmsConstants.BNLJ_BUFFER_BLOCKS);
@@ -87,25 +99,11 @@ public class MockCostModel {
             case INSERT, UPDATE, DELETE -> 1.0;
         };
 
-        long dummyRows = root instanceof ScanNode scan
-                ? getStats(scan.getTable()).getRecordCount()
+        long dummyRows = root instanceof ScanNode
+                ? scanStats.getRecordCount()
                 : Math.max(1L, root.getEstimatedRows());
         root.setEstimatedRows(dummyRows);
         root.setEstimatedCost(nodeCost);
         return childrenCost + nodeCost;
-    }
-
-    private TableStats getStats(String table) {
-        if (storageManager != null && table != null) {
-            try {
-                TableStats stats = storageManager.getStats(table);
-                if (stats != null) {
-                    return stats;
-                }
-            } catch (StorageException ignored) {
-                // fallback ke DEFAULT_STATS
-            }
-        }
-        return DEFAULT_STATS;
     }
 }

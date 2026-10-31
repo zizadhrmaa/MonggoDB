@@ -62,13 +62,31 @@ public class MockQueryBinder {
         }
         PlanNode head = query.getHead();
         if (head instanceof InsertNode insertNode) {
-            Schema schema = getSchema(insertNode.getTable());
+            Schema schema = DEFAULT_SCHEMA;
+            if (storageManager != null) {
+                try {
+                    schema = storageManager.getTableSchema(insertNode.getTable());
+                } catch (StorageException e) {
+                    throw new QOException(Code.SEMANTIC_ERROR, e.getMessage(), 0, insertNode.getTable());
+                }
+            } else if (insertNode.getTable() == null || !insertNode.getTable().equalsIgnoreCase(DEFAULT_TABLE)) {
+                throw new QOException(Code.SEMANTIC_ERROR, "Tabel '" + insertNode.getTable() + "' tidak ditemukan", 0, insertNode.getTable() != null ? insertNode.getTable() : "");
+            }
             List<Value> values = insertNode.getValues();
             if (values == null || values.size() != schema.size()) {
                 throw new QOException(Code.SEMANTIC_ERROR, "Jumlah nilai INSERT tidak sesuai skema " + schema.getTableName(), 0, schema.getTableName());
             }
         } else if (head instanceof UpdateNode updateNode) {
-            Schema schema = getSchema(updateNode.getTable());
+            Schema schema = DEFAULT_SCHEMA;
+            if (storageManager != null) {
+                try {
+                    schema = storageManager.getTableSchema(updateNode.getTable());
+                } catch (StorageException e) {
+                    throw new QOException(Code.SEMANTIC_ERROR, e.getMessage(), 0, updateNode.getTable());
+                }
+            } else if (updateNode.getTable() == null || !updateNode.getTable().equalsIgnoreCase(DEFAULT_TABLE)) {
+                throw new QOException(Code.SEMANTIC_ERROR, "Tabel '" + updateNode.getTable() + "' tidak ditemukan", 0, updateNode.getTable() != null ? updateNode.getTable() : "");
+            }
             Column col = schema.getColumn(updateNode.getColumn().getColumn());
             if (col == null) {
                 throw new QOException(Code.SEMANTIC_ERROR, "Kolom '" + updateNode.getColumn().getColumn() + "' tidak ditemukan", 0, updateNode.getColumn().getColumn());
@@ -76,7 +94,16 @@ public class MockQueryBinder {
             updateNode.getColumn().bind(schema.getTableName(), false, col.getDataType());
         } else if (head instanceof ProjectNode projectNode) {
             String table = projectNode.getChild() instanceof ScanNode scan ? scan.getTable() : DEFAULT_TABLE;
-            Schema schema = getSchema(table);
+            Schema schema = DEFAULT_SCHEMA;
+            if (storageManager != null) {
+                try {
+                    schema = storageManager.getTableSchema(table);
+                } catch (StorageException e) {
+                    throw new QOException(Code.SEMANTIC_ERROR, e.getMessage(), 0, table);
+                }
+            } else if (table == null || !table.equalsIgnoreCase(DEFAULT_TABLE)) {
+                throw new QOException(Code.SEMANTIC_ERROR, "Tabel '" + table + "' tidak ditemukan", 0, table != null ? table : "");
+            }
             List<ColumnRef> boundCols = new ArrayList<>();
             for (ColumnRef colRef : projectNode.getColumns()) {
                 if ("*".equals(colRef.getColumn())) {
@@ -97,19 +124,5 @@ public class MockQueryBinder {
             projectNode.setColumns(boundCols);
         }
         return query;
-    }
-
-    private Schema getSchema(String table) throws QOException {
-        if (storageManager != null) {
-            try {
-                return storageManager.getTableSchema(table);
-            } catch (StorageException e) {
-                throw new QOException(Code.SEMANTIC_ERROR, e.getMessage(), 0, table);
-            }
-        }
-        if (table == null || !table.equalsIgnoreCase(DEFAULT_TABLE)) {
-            throw new QOException(Code.SEMANTIC_ERROR, "Tabel '" + table + "' tidak ditemukan", 0, table != null ? table : "");
-        }
-        return DEFAULT_SCHEMA;
     }
 }
