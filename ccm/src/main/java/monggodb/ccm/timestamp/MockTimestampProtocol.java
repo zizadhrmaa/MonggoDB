@@ -26,6 +26,7 @@ public class MockTimestampProtocol {
 
     private final Map<TxId, Set<ResourceId>> touched = new HashMap<>();
     private final Set<TxId> failed = new HashSet<>();
+    private final Map<String, ResourceId> openAccess = new HashMap<>();
     private final List<String> calls = new ArrayList<>();
     private AccessDecision nextDecision = AccessDecision.ALLOWED;
     private List<TxId> nextBlockedBy = List.of();
@@ -67,6 +68,9 @@ public class MockTimestampProtocol {
                     List.of(), "Mock: melanggar urutan timestamp");
         }
         touched.computeIfAbsent(txId, key -> new LinkedHashSet<>()).add(resource);
+        if (decision == AccessDecision.ALLOWED) {
+            openAccess.put(requestId, resource);
+        }
         return new AccessResponse(txId, requestId, decision, LSN.NONE, null,
                 decision == AccessDecision.WAITING ? blockedBy : List.of(), "Mock: akses " + decision);
     }
@@ -106,25 +110,29 @@ public class MockTimestampProtocol {
     }
 
     /**
-     * Dipanggil completeAccess: mencatat penutupan akses, lalu meminta wakeWaiters.
+     * Dipanggil completeAccess: mencatat penutupan akses, lalu membangunkan penunggu resource-nya.
+     * Resource dicari dari requestId yang tadi di-ALLOWED oleh validateTimestamp.
      *
      * @param txId pemilik akses
      * @param requestId identitas akses yang ditutup
      * @param success true bila operasi SM berhasil
-     * @param resource resource akses tersebut
      */
-    public synchronized void onAccessCompleted(TxId txId, String requestId, boolean success, ResourceId resource) {
-        if (txId == null || requestId == null || resource == null) {
-            throw new CCMException(CCMException.Code.INVALID_REQUEST, "txId, requestId, dan resource wajib diisi");
+    public synchronized void onAccessCompleted(TxId txId, String requestId, boolean success) {
+        if (txId == null || requestId == null) {
+            throw new CCMException(CCMException.Code.INVALID_REQUEST, "txId dan requestId wajib diisi");
         }
         calls.add("onAccessCompleted " + txId + " " + requestId + " " + success);
-        wakeWaiters(resource);
+        ResourceId resource = openAccess.remove(requestId);
+        if (resource != null) {
+            wakeWaiters(resource);
+        }
     }
 
     /** Dipanggil resetAfterRecovery: mengosongkan state per resource dan penanda gagal. */
     public synchronized void resetTimestampState() {
         touched.clear();
         failed.clear();
+        openAccess.clear();
         nextDecision = AccessDecision.ALLOWED;
         nextBlockedBy = List.of();
         calls.add("resetTimestampState");
