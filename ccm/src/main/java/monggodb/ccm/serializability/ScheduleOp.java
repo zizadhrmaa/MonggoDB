@@ -11,10 +11,8 @@ import monggodb.contracts.shared.TxId;
  * @param txId transaksi pelaku
  * @param kind jenis operasi
  * @param resource resource yang diakses, null untuk COMMIT/ABORT
- * @param value nilai tulis untuk WRITE, null untuk operasi lain; dipakai untuk membandingkan data akhir
- *              dengan eksekusi serial (tambahan dari dokumen #22)
  */
-public record ScheduleOp(long seq, TxId txId, Kind kind, ResourceId resource, Integer value) {
+public record ScheduleOp(long seq, TxId txId, Kind kind, ResourceId resource) {
 
     /** Jenis operasi schedule */
     public enum Kind { READ, WRITE, COMMIT, ABORT }
@@ -26,9 +24,6 @@ public record ScheduleOp(long seq, TxId txId, Kind kind, ResourceId resource, In
         boolean access = kind == Kind.READ || kind == Kind.WRITE;
         if (access != (resource != null)) {
             throw new CCMException(CCMException.Code.INVALID_REQUEST, "resource wajib untuk READ/WRITE dan null untuk COMMIT/ABORT");
-        }
-        if (kind != Kind.WRITE && value != null) {
-            throw new CCMException(CCMException.Code.INVALID_REQUEST, "value hanya untuk WRITE");
         }
     }
 }
