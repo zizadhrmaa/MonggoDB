@@ -1,0 +1,91 @@
+@startuml shared-data-types-ccm
+' Shared data type milik Concurrency Control Manager, dibuat dari contracts/shared di main.
+!pragma layout smetana
+set separator none
+hide empty members
+hide circle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+package "Concurrency Control Manager" {
+  class "TxId" <<dataType>> {
+    + value: long
+  }
+  enum "TransactionStatus" <<enumeration>> {
+    ACTIVE
+    PARTIALLY_COMMITTED
+    FAILED
+    ABORTED
+    COMMITTED
+  }
+  enum "ProtocolType" <<enumeration>> {
+    LOCK_BASED
+    TIMESTAMP_BASED
+  }
+  class "ResourceId" <<dataType>> {
+    + table: String
+    + granularity: ResourceId.Granularity
+    + rid: RID
+  }
+  enum "ResourceId.Granularity" <<enumeration>> {
+    TABLE
+  }
+  enum "AccessDecision" <<enumeration>> {
+    ALLOWED
+    WAITING
+    ABORTED
+  }
+  class "AccessResponse" <<dataType>> {
+    + txId: TxId
+    + requestId: String
+    + decision: AccessDecision
+    + lsn: LSN
+    + abortReason: AbortReason
+    + blockedBy: List<TxId>
+    + message: String
+  }
+  class "TransactionResult" <<dataType>> {
+    + txId: TxId
+    + success: boolean
+    + status: TransactionStatus
+    + abortReason: AbortReason
+    + message: String
+  }
+  enum "AbortReason" <<enumeration>> {
+    USER_REQUEST
+    DEADLOCK_VICTIM
+    TIMESTAMP_VIOLATION
+    LOG_FAILED
+    ACCESS_FAILED
+    DISCONNECT
+  }
+  class "ChangeRequest" <<dataType>> {
+    + operationId: String
+    + type: LogType
+    + table: String
+    + rid: RID
+    + before: Row
+    + after: Row
+  }
+  class "CCMConfig" <<dataType>> {
+    + protocol: ProtocolType
+    + deadlockCheckIntervalMs: long
+    + deadlockResolveTimeoutMs: long
+  }
+  class "CCMException" <<dataType>> {
+    + errorCode: CCMException.Code
+  }
+  enum "CCMException.Code" <<enumeration>> {
+    TX_UNKNOWN
+    INVALID_STATE
+    INVALID_REQUEST
+    PROTOCOL_BUSY
+    ADMISSION_PAUSED
+    NOT_READY
+    RECOVERY_FAILED
+    LOG_FAILED
+    ROLLBACK_FAILED
+  }
+}
+@enduml

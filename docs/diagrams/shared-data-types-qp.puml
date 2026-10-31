@@ -1,0 +1,26 @@
+@startuml shared-data-types-qp
+' Shared data type milik Query Processor, dibuat dari contracts/shared di main.
+!pragma layout smetana
+set separator none
+hide empty members
+hide circle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+package "Query Processor" {
+  class "MdbmsException" <<dataType>> {
+    + code: String
+  }
+  class "QPException" <<dataType>> {
+    + errorCode: QPException.Code
+  }
+  enum "QPException.Code" <<enumeration>> {
+    COLUMN_NOT_FOUND
+    AMBIGUOUS_COLUMN
+    DIVISION_BY_ZERO
+    DDL_IN_TRANSACTION
+    INVALID_PLAN
+  }
+}
+@enduml
