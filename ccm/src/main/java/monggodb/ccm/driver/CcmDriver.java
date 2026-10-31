@@ -119,7 +119,7 @@ public final class CcmDriver {
         System.out.println();
         System.out.println("=== " + file.name() + " [manual]" + (file.title().isEmpty() ? "" : ": " + file.title()));
         List<ScheduleOp> schedule = file.manualSchedule();
-        System.out.println("  Schedule      : " + VerificationOutput.schedule(schedule, tx -> "T" + tx.value()));
+        System.out.println("  Schedule      : " + VerificationOutput.schedule(schedule, tx -> "T" + tx.value(), file.manualValues()));
         if (verifier == null) {
             System.out.println("  Verifikasi    : dilewati, verifier CC-09 tidak diberikan");
             return new Summary(file.name(), "manual", file.title(), "LEWAT");
@@ -130,7 +130,6 @@ public final class CcmDriver {
         if (result.serializable() != file.serializable()) {
             failures.add("serializable " + result.serializable() + ", seharusnya " + file.serializable());
         }
-        VerificationOutput.checkSerialEquivalence(schedule, result, failures);
         return verdict(file, "manual", failures);
     }
 

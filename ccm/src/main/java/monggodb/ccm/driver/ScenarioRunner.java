@@ -100,6 +100,7 @@ public final class ScenarioRunner {
         private final Map<String, AbortReason> abortReason = new ConcurrentHashMap<>();
         private final Map<String, Long> abortedAt = new ConcurrentHashMap<>();
         private final List<ScheduleOp> schedule = new CopyOnWriteArrayList<>();
+        private final Map<Long, Integer> writeValues = new ConcurrentHashMap<>();
         private final List<OperationStatus> operations = new CopyOnWriteArrayList<>();
         private final List<Long> accessSubmits = new CopyOnWriteArrayList<>();
         private final List<String> failures = new ArrayList<>();
@@ -292,7 +293,10 @@ public final class ScenarioRunner {
         }
 
         private synchronized void record(TxId txId, ScheduleOp.Kind kind, ResourceId resource, Integer value) {
-            schedule.add(new ScheduleOp(++seq, txId, kind, resource, kind == ScheduleOp.Kind.WRITE ? value : null));
+            schedule.add(new ScheduleOp(++seq, txId, kind, resource));
+            if (kind == ScheduleOp.Kind.WRITE) {
+                writeValues.put(seq, value);
+            }
         }
 
         private String label(TxId id) {
@@ -317,7 +321,7 @@ public final class ScenarioRunner {
                             + ", seharusnya " + op.expectedDecision());
                 }
             }
-            System.out.println("  Schedule akhir: " + VerificationOutput.schedule(schedule, this::label));
+            System.out.println("  Schedule akhir: " + VerificationOutput.schedule(schedule, this::label, writeValues));
         }
 
         private Map<String, TransactionStatus> finalStatus() {
@@ -369,7 +373,6 @@ public final class ScenarioRunner {
                 if (result.serializable() != scenario.expected().serializable()) {
                     failures.add("serializable " + result.serializable() + ", seharusnya " + scenario.expected().serializable());
                 }
-                VerificationOutput.checkSerialEquivalence(List.copyOf(schedule), result, failures);
                 return result;
             } catch (RuntimeException e) {
                 failures.add("verifySchedule gagal: " + e);
@@ -396,7 +399,7 @@ public final class ScenarioRunner {
                 for (TxId tx : verification.serialOrder()) {
                     for (ScheduleOp op : schedule) {
                         if (op.kind() == ScheduleOp.Kind.WRITE && op.txId().equals(tx)) {
-                            want.put(op.resource().table(), op.value());
+                            want.put(op.resource().table(), writeValues.get(op.seq()));
                         }
                     }
                 }

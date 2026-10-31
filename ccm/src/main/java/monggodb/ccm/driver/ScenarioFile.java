@@ -137,12 +137,19 @@ final class ScenarioFile {
         return result;
     }
 
+    /** Nilai tulis mode manual per seq, untuk tampilan schedule */
+    Map<Long, Integer> manualValues() {
+        Map<Long, Integer> values = new TreeMap<>();
+        steps.stream().filter(s -> s.value() != null).forEach(s -> values.put((long) s.step(), s.value()));
+        return values;
+    }
+
     /** Schedule mode manual dengan TxId dari nomor label */
     List<ScheduleOp> manualSchedule() {
         List<ScheduleOp> schedule = new ArrayList<>();
         for (Step s : steps) {
             schedule.add(new ScheduleOp(s.step(), new TxId(Long.parseLong(s.label().substring(1))),
-                    ScheduleOp.Kind.valueOf(s.kind().name()), s.item() == null ? null : new ResourceId(s.item()), s.value()));
+                    ScheduleOp.Kind.valueOf(s.kind().name()), s.item() == null ? null : new ResourceId(s.item())));
         }
         return schedule;
     }
