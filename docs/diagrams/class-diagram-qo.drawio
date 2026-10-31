@@ -1,0 +1,539 @@
+<mxfile host="app.diagrams.net" compressed="false">
+  <diagram id="qo-integrated-grouped" name="QO">
+    <mxGraphModel grid="0" page="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="0" pageScale="1" pageWidth="4330" pageHeight="3970" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="group-QO1" parent="1" style="rounded=0;container=1;collapsible=0;recursiveResize=0;connectable=0;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;" value="" vertex="1">
+          <mxGeometry height="1160" width="1900" x="80" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="group-QO1-heading" parent="group-QO1" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontStyle=1;fontColor=#000000;" value="QO1" vertex="1">
+          <mxGeometry height="54" width="1840" x="30" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizerTestDriver" parent="group-QO1" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DCEBFA;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO1&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;QueryOptimizerTestDriver&lt;/b&gt;" vertex="1">
+          <mxGeometry height="126" width="770" x="50" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizerTestDriver-member-1" parent="QueryOptimizerTestDriver" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ runTestCases(testCases: List&lt;TestCase&gt;): TestReport" vertex="1">
+          <mxGeometry height="36" width="734" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizer" parent="group-QO1" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DCEBFA;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO1&amp;gt;&amp;gt; &amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;QueryOptimizer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="198" width="800" x="1030" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizer-member-1" parent="QueryOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseQuery(sql: String): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizer-member-2" parent="QueryOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ optimizeQuery(query: ParsedQuery): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizer-member-3" parent="QueryOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ explain(initial: ParsedQuery, optimized: ParsedQuery): String" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlLexer" parent="group-QO1" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DCEBFA;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO1&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;SqlLexer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="126" width="770" x="50" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlLexer-member-1" parent="SqlLexer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ tokenize(sql: String): TokenStream" vertex="1">
+          <mxGeometry height="36" width="734" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizerFacade" parent="group-QO1" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DCEBFA;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO1&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;QueryOptimizerService&lt;/b&gt;" vertex="1">
+          <mxGeometry height="198" width="800" x="1030" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizerFacade-member-1" parent="QueryOptimizerFacade" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseQuery(sql: String): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizerFacade-member-2" parent="QueryOptimizerFacade" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ optimizeQuery(query: ParsedQuery): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryOptimizerFacade-member-3" parent="QueryOptimizerFacade" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ explain(initial: ParsedQuery, optimized: ParsedQuery): String" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryPlanVisualizer" parent="group-QO1" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DCEBFA;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO1&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;QueryPlanVisualizer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="126" width="770" x="50" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryPlanVisualizer-member-1" parent="QueryPlanVisualizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ visualizePlan(root: PlanNode): String" vertex="1">
+          <mxGeometry height="36" width="734" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlParser" parent="group-QO1" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DCEBFA;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO1&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;SqlParser&lt;/b&gt;" vertex="1">
+          <mxGeometry height="270" width="800" x="1030" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlParser-member-1" parent="SqlParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseSelect(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlParser-member-2" parent="SqlParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parseFromClause(tokens: TokenStream): PlanNode" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlParser-member-3" parent="SqlParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parseOrderByClause(tokens: TokenStream): SortKey" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlParser-member-4" parent="SqlParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parseLimitClause(tokens: TokenStream): LimitSpec" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="SqlParser-member-5" parent="SqlParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parseTableAlias(tokens: TokenStream): TableRef" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-1" edge="1" parent="group-QO1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=block;endSize=22;exitX=0.5;exitY=0;entryX=0.5;entryY=1;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="QueryOptimizer" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-2" edge="1" parent="group-QO1" source="QueryOptimizerTestDriver" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.4;entryX=0;entryY=0.3;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="QueryOptimizer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="190.4" />
+              <mxPoint x="930" y="199.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-3" edge="1" parent="group-QO1" source="QueryOptimizerTestDriver" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.65;entryX=0;entryY=0.4;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="QueryPlanVisualizer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="25" y="221.9" />
+              <mxPoint x="25" y="840.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-4" edge="1" parent="group-QO1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.25;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="SqlLexer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="509.5" />
+              <mxPoint x="960" y="523" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-5" edge="1" parent="group-QO1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="SqlParser" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-6" edge="1" parent="group-QO1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.65;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="QueryPlanVisualizer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="980" y="588.7" />
+              <mxPoint x="980" y="853" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="group-QO2" parent="1" style="rounded=0;container=1;collapsible=0;recursiveResize=0;connectable=0;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;" value="" vertex="1">
+          <mxGeometry height="680" width="1900" x="2300" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="group-QO2-heading" parent="group-QO2" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontStyle=1;fontColor=#000000;" value="QO2" vertex="1">
+          <mxGeometry height="54" width="1840" x="30" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser" parent="group-QO2" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DFEFE4;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO2&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;StatementParser&lt;/b&gt;" vertex="1">
+          <mxGeometry height="342" width="780" x="90" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-1" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseInsert(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-2" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseUpdate(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-3" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseDelete(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-4" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseTransaction(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-5" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseCreateIndex(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-6" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseCreateTable(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="StatementParser-member-7" parent="StatementParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseDropTable(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="744" x="18" y="296" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser" parent="group-QO2" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#DFEFE4;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO2&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;ExpressionParser&lt;/b&gt;" vertex="1">
+          <mxGeometry height="306" width="800" x="1030" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser-member-1" parent="ExpressionParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseExpression(tokens: TokenStream): ExpressionNode" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser-member-2" parent="ExpressionParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseLiteral(tokens: TokenStream): Value" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser-member-3" parent="ExpressionParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ parseColumnRef(tokens: TokenStream): ColumnRef" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser-member-4" parent="ExpressionParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parsePrimary(tokens: TokenStream): ExpressionNode" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser-member-5" parent="ExpressionParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parseSubquery(tokens: TokenStream): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="ExpressionParser-member-6" parent="ExpressionParser" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- parseSubqueryPredicate(tokens: TokenStream): ExpressionNode" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-7" edge="1" parent="group-QO2" source="StatementParser" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.4;entryX=0;entryY=0.4;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="ExpressionParser" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="326.8" />
+              <mxPoint x="950" y="312.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="group-QO3" parent="1" style="rounded=0;container=1;collapsible=0;recursiveResize=0;connectable=0;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;" value="" vertex="1">
+          <mxGeometry height="1080" width="1900" x="80" y="1660" as="geometry" />
+        </mxCell>
+        <mxCell id="group-QO3-heading" parent="group-QO3" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontStyle=1;fontColor=#000000;" value="QO3" vertex="1">
+          <mxGeometry height="54" width="1840" x="30" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryBinder" parent="group-QO3" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8EACB;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO3&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;QueryBinder&lt;/b&gt;" vertex="1">
+          <mxGeometry height="270" width="820" x="70" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryBinder-member-1" parent="QueryBinder" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ bindQuery(query: ParsedQuery): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryBinder-member-2" parent="QueryBinder" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- resolveColumn(colRef: ColumnRef, fromTables: List&lt;String&gt;): ColumnRef" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryBinder-member-3" parent="QueryBinder" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- inferExpressionType(expr: ExpressionNode, fromTables: List&lt;String&gt;): DataType" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryBinder-member-4" parent="QueryBinder" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- validateInsert(node: InsertNode, schema: Schema): void" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryBinder-member-5" parent="QueryBinder" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- validateUpdate(node: UpdateNode, schema: Schema): void" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="CostModel" parent="group-QO3" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8EACB;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO3&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;CostModel&lt;/b&gt;" vertex="1">
+          <mxGeometry height="234" width="820" x="1010" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="CostModel-member-1" parent="CostModel" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getCost(root: PlanNode): double" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="CostModel-member-2" parent="CostModel" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- estimateNodeCost(node: PlanNode): double" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="CostModel-member-3" parent="CostModel" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ estimateCardinality(node: PlanNode): double" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="CostModel-member-4" parent="CostModel" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- estimateSelectivity(predicate: ExpressionNode, stats: TableStats): double" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="StorageManager" parent="group-QO3" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#E8EBEF;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;external&amp;gt;&amp;gt; &amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;StorageManager&lt;/b&gt;" vertex="1">
+          <mxGeometry height="198" width="820" x="70" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="StorageManager-member-1" parent="StorageManager" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getTableSchema(table: String): Schema" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="StorageManager-member-2" parent="StorageManager" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getStats(table: String): TableStats" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="StorageManager-member-3" parent="StorageManager" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getIndexes(table: String): List&lt;IndexInfo&gt;" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="MdbmsConstants" parent="group-QO3" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8EACB;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO3&amp;gt;&amp;gt; &amp;lt;&amp;lt;utility&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;MdbmsConstants&lt;/b&gt;" vertex="1">
+          <mxGeometry height="126" width="820" x="1010" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="MdbmsConstants-member-1" parent="MdbmsConstants" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;fontStyle=0;" value="+ BNLJ_BUFFER_BLOCKS: int = 3 {readOnly}" vertex="1">
+          <mxGeometry height="36" width="784" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-8" edge="1" parent="group-QO3" source="QueryBinder" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="StorageManager" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-9" edge="1" parent="group-QO3" source="CostModel" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.25;exitY=1;entryX=0.8;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="StorageManager" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1215" y="560" />
+              <mxPoint x="726" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-10" edge="1" parent="group-QO3" source="CostModel" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.75;exitY=1;entryX=0.75;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="MdbmsConstants" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="group-QO4" parent="1" style="rounded=0;container=1;collapsible=0;recursiveResize=0;connectable=0;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;" value="" vertex="1">
+          <mxGeometry height="1260" width="1900" x="2300" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="group-QO4-heading" parent="group-QO4" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontStyle=1;fontColor=#000000;" value="QO4" vertex="1">
+          <mxGeometry height="54" width="1840" x="30" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryTreeRewriter" parent="group-QO4" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#EADFF4;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO4&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;QueryTreeRewriter&lt;/b&gt;" vertex="1">
+          <mxGeometry height="126" width="800" x="550" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="QueryTreeRewriter-member-1" parent="QueryTreeRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ rewrite(query: ParsedQuery): ParsedQuery" vertex="1">
+          <mxGeometry height="36" width="764" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SelectionRewriter" parent="group-QO4" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#EADFF4;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO4&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;SelectionRewriter&lt;/b&gt;" vertex="1">
+          <mxGeometry height="270" width="850" x="50" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="SelectionRewriter-member-1" parent="SelectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ rewriteSelections(root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SelectionRewriter-member-2" parent="SelectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- splitConjunctivePredicates(predicate: ExpressionNode): List&lt;ExpressionNode&gt;" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="SelectionRewriter-member-3" parent="SelectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- buildSelectionChain(child: PlanNode, predicates: List&lt;ExpressionNode&gt;): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="SelectionRewriter-member-4" parent="SelectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- reorderSelections(root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="SelectionRewriter-member-5" parent="SelectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- pushDownSelection(root: PlanNode, predicate: ExpressionNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="ProjectionRewriter" parent="group-QO4" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#EADFF4;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO4&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;ProjectionRewriter&lt;/b&gt;" vertex="1">
+          <mxGeometry height="234" width="850" x="1000" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="ProjectionRewriter-member-1" parent="ProjectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ rewriteProjections(root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ProjectionRewriter-member-2" parent="ProjectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- collapseProjections(root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="ProjectionRewriter-member-3" parent="ProjectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- pushDownProjection(root: PlanNode, requiredColumns: Set&lt;ColumnRef&gt;): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="ProjectionRewriter-member-4" parent="ProjectionRewriter" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- preserveFinalProjection(root: PlanNode, outputColumns: List&lt;ColumnRef&gt;): PlanNode" vertex="1">
+          <mxGeometry height="36" width="814" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="ColumnDependencyAnalyzer" parent="group-QO4" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#EADFF4;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO4&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;ColumnDependencyAnalyzer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="234" width="920" x="490" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="ColumnDependencyAnalyzer-member-1" parent="ColumnDependencyAnalyzer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getReferencedTables(expression: ExpressionNode): Set&lt;String&gt;" vertex="1">
+          <mxGeometry height="36" width="884" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ColumnDependencyAnalyzer-member-2" parent="ColumnDependencyAnalyzer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getReferencedColumns(expression: ExpressionNode): Set&lt;ColumnRef&gt;" vertex="1">
+          <mxGeometry height="36" width="884" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="ColumnDependencyAnalyzer-member-3" parent="ColumnDependencyAnalyzer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getSubtreeTables(root: PlanNode): Set&lt;String&gt;" vertex="1">
+          <mxGeometry height="36" width="884" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="ColumnDependencyAnalyzer-member-4" parent="ColumnDependencyAnalyzer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ getRequiredColumns(node: PlanNode, requiredOutputColumns: Set&lt;ColumnRef&gt;): Set&lt;ColumnRef&gt;" vertex="1">
+          <mxGeometry height="36" width="884" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-11" edge="1" parent="group-QO4" source="QueryTreeRewriter" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.25;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="SelectionRewriter" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="350" />
+              <mxPoint x="475" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-12" edge="1" parent="group-QO4" source="QueryTreeRewriter" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.75;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="ProjectionRewriter" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="350" />
+              <mxPoint x="1425" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-13" edge="1" parent="group-QO4" source="SelectionRewriter" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.5;exitY=1;entryX=0.25;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="ColumnDependencyAnalyzer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="475" y="790" />
+              <mxPoint x="720" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-14" edge="1" parent="group-QO4" source="ProjectionRewriter" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.5;exitY=1;entryX=0.75;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="ColumnDependencyAnalyzer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1425" y="790" />
+              <mxPoint x="1180" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="group-QO5" parent="1" style="rounded=0;container=1;collapsible=0;recursiveResize=0;connectable=0;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;" value="" vertex="1">
+          <mxGeometry height="1110" width="1900" x="2300" y="2680" as="geometry" />
+        </mxCell>
+        <mxCell id="group-QO5-heading" parent="group-QO5" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=28;fontStyle=1;fontColor=#000000;" value="QO5" vertex="1">
+          <mxGeometry height="54" width="1840" x="30" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinCandidateGenerator" parent="group-QO5" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8DFD8;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO5&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;JoinCandidateGenerator&lt;/b&gt;" vertex="1">
+          <mxGeometry height="162" width="750" x="70" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinCandidateGenerator-member-1" parent="JoinCandidateGenerator" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ swapJoinChildren(node: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="714" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinCandidateGenerator-member-2" parent="JoinCandidateGenerator" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ regroupJoins(root: PlanNode): List&lt;PlanNode&gt;" vertex="1">
+          <mxGeometry height="36" width="714" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer" parent="group-QO5" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8DFD8;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO5&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;JoinAccessOptimizer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="342" width="880" x="950" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-1" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ rewriteCartesianProductToJoin(root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-2" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ generateJoinCandidates(root: PlanNode): List&lt;PlanNode&gt;" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-3" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ applyIndexScan(root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-4" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ chooseBestPlan(candidates: List&lt;PlanNode&gt;): PlanNode" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-5" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ optimizeJoinOrderGA(root: PlanNode, config: GAConfig): PlanNode" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-6" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ computeBlockLimit(outer: PlanNode, joinSpec: JoinSpec): int" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinAccessOptimizer-member-7" parent="JoinAccessOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ compareGAWithHeuristic(gaPlan: PlanNode, heuristicPlan: PlanNode): ComparisonResult" vertex="1">
+          <mxGeometry height="36" width="844" x="18" y="296" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer" parent="group-QO5" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8DFD8;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO5&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;GeneticAlgorithmOptimizer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="306" width="900" x="70" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer-member-1" parent="GeneticAlgorithmOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ initializePopulation(root: PlanNode, populationSize: int): List&lt;JoinOrder&gt;" vertex="1">
+          <mxGeometry height="36" width="864" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer-member-2" parent="GeneticAlgorithmOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ evaluateFitness(candidate: JoinOrder, root: PlanNode): double" vertex="1">
+          <mxGeometry height="36" width="864" x="18" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer-member-3" parent="GeneticAlgorithmOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ selectParents(population: List&lt;JoinOrder&gt;, fitness: List&lt;double&gt;): List&lt;JoinOrder&gt;" vertex="1">
+          <mxGeometry height="36" width="864" x="18" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer-member-4" parent="GeneticAlgorithmOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ crossoverJoinOrders(parent1: JoinOrder, parent2: JoinOrder): JoinOrder" vertex="1">
+          <mxGeometry height="36" width="864" x="18" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer-member-5" parent="GeneticAlgorithmOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ mutateJoinOrder(candidate: JoinOrder, mutationRate: double): JoinOrder" vertex="1">
+          <mxGeometry height="36" width="864" x="18" y="224" as="geometry" />
+        </mxCell>
+        <mxCell id="GeneticAlgorithmOptimizer-member-6" parent="GeneticAlgorithmOptimizer" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="- validateJoinOrder(candidate: JoinOrder, root: PlanNode): boolean" vertex="1">
+          <mxGeometry height="36" width="864" x="18" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinOrderPlanBuilder" parent="group-QO5" style="swimlane;html=1;horizontal=1;startSize=70;collapsible=0;container=1;recursiveResize=0;whiteSpace=wrap;rounded=0;fillColor=#F8DFD8;swimlaneFillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontFamily=Helvetica;fontSize=22;fontColor=#000000;align=center;verticalAlign=middle;spacing=4;" value="&lt;span style=&quot;font-family:Helvetica;font-size:16px&quot;&gt;&amp;lt;&amp;lt;QO5&amp;gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-family:Helvetica&quot;&gt;JoinOrderPlanBuilder&lt;/b&gt;" vertex="1">
+          <mxGeometry height="126" width="760" x="1070" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="JoinOrderPlanBuilder-member-1" parent="JoinOrderPlanBuilder" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=#000000;spacing=0;overflow=hidden;" value="+ buildPlanFromJoinOrder(candidate: JoinOrder, root: PlanNode): PlanNode" vertex="1">
+          <mxGeometry height="36" width="724" x="18" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="relation-15" edge="1" parent="group-QO5" source="JoinAccessOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.2;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="JoinCandidateGenerator" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="218.4" />
+              <mxPoint x="900" y="231" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-16" edge="1" parent="group-QO5" source="JoinAccessOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.2;exitY=1;entryX=0.7;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="GeneticAlgorithmOptimizer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1127.1999999999998" y="519.4000000000001" />
+              <mxPoint x="700" y="518.3800000000001" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-17" edge="1" parent="group-QO5" source="JoinAccessOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.8;exitY=1;entryX=0.75;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="JoinOrderPlanBuilder" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1654" y="610" />
+              <mxPoint x="1640" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-18" edge="1" parent="group-QO5" source="GeneticAlgorithmOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.65;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="JoinOrderPlanBuilder" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="798.9" />
+              <mxPoint x="1020" y="763" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-19" edge="1" parent="1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.18;entryX=0;entryY=0.2;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="StatementParser" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2100" y="695.64" />
+              <mxPoint x="2100" y="458.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-20" edge="1" parent="1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.9;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="QueryBinder" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="838.2" />
+              <mxPoint x="1040" y="1510" />
+              <mxPoint x="560" y="1510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-21" edge="1" parent="1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.42;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="CostModel" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2140" y="743.16" />
+              <mxPoint x="2140" y="1550" />
+              <mxPoint x="1500" y="1550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-22" edge="1" parent="1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.64;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="QueryTreeRewriter" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2180" y="786.72" />
+              <mxPoint x="2180" y="1060" />
+              <mxPoint x="3250" y="1060" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-23" edge="1" parent="1" source="QueryOptimizerFacade" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.86;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="JoinAccessOptimizer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2220" y="830.28" />
+              <mxPoint x="2220" y="2570" />
+              <mxPoint x="3690" y="2570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-24" edge="1" parent="1" source="QueryOptimizerTestDriver" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.3;entryX=0.75;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="JoinAccessOptimizer" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="35" y="377.8" />
+              <mxPoint x="35" y="2800" />
+              <mxPoint x="3910" y="2800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-25" edge="1" parent="1" source="SqlParser" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=1;exitY=0.2;entryX=0.25;entryY=1;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="ExpressionParser" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2020" y="1044" />
+              <mxPoint x="2020" y="960" />
+              <mxPoint x="3530" y="960" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-26" edge="1" parent="1" source="ExpressionParser" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.7;exitY=1;entryX=1;entryY=0.65;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="SqlParser" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3890" y="1010" />
+              <mxPoint x="2060" y="1010" />
+              <mxPoint x="2060" y="1165.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-27" edge="1" parent="1" source="JoinAccessOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0.55;exitY=1;entryX=1;entryY=0.25;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="CostModel" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3734" y="3230" />
+              <mxPoint x="2120" y="3230" />
+              <mxPoint x="2120" y="1868.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-28" edge="1" parent="1" source="JoinAccessOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.75;entryX=0.9;entryY=0;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="StorageManager" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2080" y="3086.5" />
+              <mxPoint x="2080" y="2220" />
+              <mxPoint x="888" y="2220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-29" edge="1" parent="1" source="JoinAccessOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.9;entryX=1;entryY=0.6;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="MdbmsConstants" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2040" y="3137.8" />
+              <mxPoint x="2040" y="2385.6" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relation-30" edge="1" parent="1" source="GeneticAlgorithmOptimizer" style="edgeStyle=none;html=0;rounded=0;dashed=1;dashPattern=8 5;strokeColor=#000000;strokeWidth=3;endFill=0;endArrow=open;endSize=15;exitX=0;exitY=0.45;entryX=1;entryY=0.85;exitPerimeter=0;entryPerimeter=0;jumpStyle=arc;jumpSize=12;fontFamily=Helvetica;fontSize=18;" target="CostModel" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2005" y="3417.7" />
+              <mxPoint x="2005" y="2008.9" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
