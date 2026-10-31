@@ -1,4 +1,4 @@
-package monggodb.sm;
+package monggodb.sm.buffer;
 
 import java.util.Objects;
 

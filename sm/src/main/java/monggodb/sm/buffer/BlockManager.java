@@ -1,4 +1,4 @@
-package monggodb.sm;
+package monggodb.sm.buffer;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

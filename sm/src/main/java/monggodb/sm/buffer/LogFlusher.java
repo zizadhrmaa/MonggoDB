@@ -1,4 +1,4 @@
-package monggodb.sm;
+package monggodb.sm.buffer;
 
 import monggodb.contracts.shared.LSN;
 
