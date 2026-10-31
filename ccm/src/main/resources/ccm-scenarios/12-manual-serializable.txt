@@ -1,0 +1,4 @@
+## Schedule manual yang serializable, tanpa CCM (CC-09)
+mode manual
+R1(A) W1(A=1) R2(A) W2(A=2) R1(B) C1 C2
+serializable ya

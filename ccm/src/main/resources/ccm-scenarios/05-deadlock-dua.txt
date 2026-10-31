@@ -1,0 +1,7 @@
+## Deadlock dua transaksi, victim TxId terbesar (CC-07)
+protokol lock
+W1(A=1) W2(B=2) W1(B=3) W2(A=4) C1
+harap-langkah 3 WAITING
+harap T1 COMMITTED
+harap T2 ABORTED DEADLOCK_VICTIM
+serializable ya

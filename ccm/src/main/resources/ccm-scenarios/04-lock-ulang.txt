@@ -1,0 +1,9 @@
+## Lock ulang, lock lebih lemah, dan upgrade tanpa pesaing (CC-06)
+awal A=1
+R1(A) R1(A) W1(A=5) R1(A) W1(A=6) C1
+harap-langkah 2 ALLOWED
+harap-langkah 3 ALLOWED
+harap-langkah 4 ALLOWED
+harap-langkah 5 ALLOWED
+harap T1 COMMITTED
+serializable ya
