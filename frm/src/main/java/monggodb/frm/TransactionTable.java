@@ -12,7 +12,7 @@ final class TransactionTable {
 
     enum TxStatus { ACTIVE, COMMITTED, ABORTED }
 
-    /** Status satu transaksi. Diubah hanya sambil memegang kunci objek ini. */
+    /** Stemanatus satu transaksi. Diubah hanya sambil memegang kunci objek ini. */
     static final class TxState {
         TxStatus status = TxStatus.ACTIVE;
     }
