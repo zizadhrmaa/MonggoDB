@@ -132,7 +132,7 @@ public final class IndexManagerImpl implements IndexManager {
         Schema schema = catalog.getTableSchema(info.getIndexTable());
         int column = requireColumn(schema, info);
         DataType keyType = schema.getColumns().get(column).getDataType();
-        return info.getIndexType() == IndexType.HASH ? new HashIndex(keyType) : new BPlusTree(keyType);
+        return info.getIndexType() == IndexType.HASH ? new HashIndex(keyType) : new BTreeIndex(keyType);
     }
 
     private List<IndexInfo> indexesOf(String table) {
